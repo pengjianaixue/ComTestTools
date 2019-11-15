@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/new/prefix1" lang="IDI_ICON1           ICON   DISCARDABLE   &quot;tools.ico&quot;">
+        <file>tools.ico</file>
+    </qresource>
+</RCC>
