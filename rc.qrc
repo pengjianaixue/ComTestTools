@@ -1,5 +1,10 @@
 <RCC>
-    <qresource prefix="/new/prefix1" lang="IDI_ICON1           ICON   DISCARDABLE   &quot;tools.ico&quot;">
+    <qresource prefix="/rc/icon" lang="IDI_ICON1           ICON   DISCARDABLE   &quot;tools.ico&quot;">
         <file>tools.ico</file>
+        <file>resource/serial-port.png</file>
+        <file>resource/serial-port-on.png</file>
+        <file>resource/clean.png</file>
+        <file>resource/record-off.png</file>
+        <file>resource/record-on.png</file>
     </qresource>
 </RCC>

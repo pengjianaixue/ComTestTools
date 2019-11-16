@@ -189,7 +189,7 @@ public:
     *  @note:
     *  @see:
     */
-     inline bool  ReadComPort(char * RecviData, DWORD & recvlength, int(*Completecallbackfun)(int param, void *arg)=NULL, int CallBackfunparam = 0, void * arg=NULL);
+     inline bool  ReadComPort(char * RecviData, DWORD &recvlength, int(*Completecallbackfun)(int param, void *arg)=NULL, int CallBackfunparam = 0, void * arg=NULL);
      /** 读取串口接收缓冲区中指定长度数据
      *
      *
@@ -785,7 +785,7 @@ bool CSerialPort::ReadComPort(char *RecviData, DWORD &recvlength, int(*Completec
         Readover->CallBackFuncparam = CallBackfunparam;
         Readover->CallBackFuncArg = arg;
         Readover->Completecallbackfunction = Completecallbackfun;
-        bResult = bResult = ReadFile(m_hComm, &RecviData, recvlength, &BytesRead, Readover);
+        bResult = bResult = ReadFile(m_hComm, RecviData, recvlength, &BytesRead, Readover);
         if (bResult != TRUE)
         {
             DWORD errorcode = GetLastError();
@@ -804,15 +804,13 @@ bool CSerialPort::ReadComPort(char *RecviData, DWORD &recvlength, int(*Completec
     else
     {
         /** 从缓冲区读取数据 */
-        bResult = ReadFile(m_hComm, &RecviData, recvlength, &BytesRead, NULL);
+        bResult = ReadFile(m_hComm, RecviData, recvlength, &BytesRead, NULL);
         if ((!bResult))
         {
             /** 获取错误码,可以根据该错误码查出错误原因 */
             DWORD dwError = GetLastError();
-
             /** 清空串口缓冲区 */
             PurgeComm(m_hComm, PURGE_RXCLEAR | PURGE_RXABORT);
-            LeaveCriticalSection(&m_csCommunicationSync);
             return false;
         }
 
@@ -823,8 +821,8 @@ bool CSerialPort::ReadComPort(char *RecviData, DWORD &recvlength, int(*Completec
     }
     else
     {
-        recvlength = BytesRead;
-        return (recvlength!=0);
+		recvlength = BytesRead;
+        return (recvlength !=0);
     }
 
 

@@ -10,6 +10,7 @@
 #include <QSerialPortInfo>
 #include <qtextcodec.h>
 #include <qmessagebox.h>
+#include <QTextBrowser>
 #include <qerrormessage.h>
 #include <string>
 #include <sstream>
@@ -56,24 +57,23 @@ public:
     bool GetComparaminit();
     bool GetComparamSetNative();
 private slots:
-	 void on_ButtonopenFile_clicked();
-     bool GetComparam(QSerialPort *SetPort);
-     bool SetLable();
-	 bool OpenCom();
-	 bool CloseComPort();
-	 bool ComSendData();
-     bool DisPlaysendsinfo(const char *cmdstr,int length);
-     bool DisPlaysendPackSum(size_t length);
-     bool SetSendGap();
-     bool DisplayuseTime(long long  timeuse );
-     bool ChangSendStrType(bool mode);
-     bool scrolllast();
-     bool OpenFilterSetWindow();
-     bool SetFilterParam(bool repeatIsOneDisplay,bool  IsHex,QString DisPlayHead,
-                         QString UnDisplayHead,QString  DisPlayTail,QString UnDisPlayTail);
-     bool SetTimestamp();
-     void Recvidata(MainWindow* pwin);
-     void DisPlayRecvData(QString data);
+	 void openFile();
+     bool getComparam(QSerialPort *setPort);
+     bool setLable();
+	 bool openComPort();
+	 bool closeComPort();
+	 bool comPortSendData();
+     bool disPlaysendsinfo(const char *cmdstr,int length);
+     bool disPlaysendPackSum(size_t length);
+     bool setLoopSendTimeGap();
+     bool changSendStrType(bool mode);
+     bool scrollLast();
+     bool openFilterSetWindow();
+     bool setFilterParam(bool repeatIsOneDisplay,bool IsHex,QString DisPlayHead,
+                         QString UnDisplayHead,QString DisPlayTail,QString UnDisPlayTail);
+     bool setTimeStamp();
+     void recviData(MainWindow* pwin);
+     void disPlayRecvData(QString data);
      void clearDisPlayContent();
 signals:
      void emitComInfo(QSerialPort *ComPort, char *SendCmd ,int *SendLoopFlag);
@@ -86,7 +86,6 @@ private:
     bool ComSendDatathread();
 	bool GetVisibleComPort();
 	bool ConnectSlot();
-    bool  SendCmd();
     bool  SendLoop();
     bool SendStop();
     bool ContextDisPlay(const QString &Discontext, unsigned int DisplayDirct, bool IsHex);
@@ -105,17 +104,17 @@ private:
  private:
     QStringList			m_ComportVisible;
     QString				m_cmdfile;
-    int                 m_comParamChange;
+	int                 m_comParamChange		= { 0};
     QByteArray			m_btyeArray;
-    QSerialPort         *m_qcomPort;
-    QSerialPortInfo     *m_visibleComPortInfor;
-    QTextCodec			*m_codec;
-    MessageFilter		*m_filterSetDialog;//消息筛选类指针
-    QToolButton			*m_toolButton;
-    QAction				*m_action;
+	QSerialPort         *m_qcomPort				= { nullptr };
+	QSerialPortInfo     *m_visibleComPortInfor  = { nullptr };
+	QTextCodec			*m_codec				= { nullptr };
+	MessageFilter		*m_filterSetDialog		= { nullptr };//消息筛选类指针
+	QToolButton			*m_toolButton			= { nullptr };
+	QAction				*m_action				= { nullptr };
 private:
 	int                      m_sendLoopFlag			= { 0 };
-	byte                     *m_psendCmd			= { nullptr};
+	byte                     *m_sendCmd				= { nullptr};
 	size_t                   m_sendCount			= { 0 };
 	bool                     m_sendIsRuning			= { false };
 	std::thread              *m_sendthread			= { false };
@@ -124,7 +123,6 @@ private:
 	double					 m_sendNum				= { 0 };
 	int                      m_sendTimeGap			= { 0 };
 	bool                     m_sendHexMode			= { false };
-	char                     *m_recviDataArray		= {nullptr};
 	bool                     m_recviThreadRunFlag	= {false};
 
     /*消息筛选变量*/

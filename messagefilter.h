@@ -20,9 +20,9 @@ signals:
 
 private slots:
     //保存按钮槽函数
-    void on_Save_clicked();
+    void save();
       //关闭按钮槽函数
-    void on_Close_clicked();
+    void close();
 
 private:
     Ui::MessageFilter *ui;

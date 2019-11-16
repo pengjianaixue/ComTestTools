@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'messagefilter.ui'
 **
-** Created by: Qt User Interface Compiler version 5.13.1
+** Created by: Qt User Interface Compiler version 5.12.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -157,17 +157,17 @@ public:
 
     void retranslateUi(QDialog *MessageFilter)
     {
-        MessageFilter->setWindowTitle(QCoreApplication::translate("MessageFilter", "Dialog", nullptr));
-        label_6->setText(QCoreApplication::translate("MessageFilter", "\351\207\215\345\244\215\346\266\210\346\201\257\345\217\252\346\230\276\347\244\272\344\270\200\346\254\241", nullptr));
-        checkBoxDisOnce->setText(QCoreApplication::translate("MessageFilter", "CheckBox", nullptr));
-        label_3->setText(QCoreApplication::translate("MessageFilter", "\345\215\201\345\205\255\350\277\233\345\210\266\347\255\233\351\200\211", nullptr));
-        radiohexFilter->setText(QCoreApplication::translate("MessageFilter", "RadioButton", nullptr));
-        label->setText(QCoreApplication::translate("MessageFilter", "\346\230\276\347\244\272\346\266\210\346\201\257\345\244\264", nullptr));
-        label_4->setText(QCoreApplication::translate("MessageFilter", "\344\270\215\346\230\276\347\244\272\346\266\210\346\201\257\345\244\264", nullptr));
-        label_2->setText(QCoreApplication::translate("MessageFilter", "\346\230\276\347\244\272\346\266\210\346\201\257\345\260\276", nullptr));
-        label_5->setText(QCoreApplication::translate("MessageFilter", "\344\270\215\346\230\276\347\244\272\346\266\210\346\201\257\345\260\276", nullptr));
-        Save->setText(QCoreApplication::translate("MessageFilter", "\344\277\235\345\255\230", nullptr));
-        Close->setText(QCoreApplication::translate("MessageFilter", "\345\205\263\351\227\255", nullptr));
+        MessageFilter->setWindowTitle(QApplication::translate("MessageFilter", "\347\255\233\351\200\211\350\256\276\347\275\256", nullptr));
+        label_6->setText(QApplication::translate("MessageFilter", "\351\207\215\345\244\215\346\266\210\346\201\257\345\217\252\346\230\276\347\244\272\344\270\200\346\254\241", nullptr));
+        checkBoxDisOnce->setText(QApplication::translate("MessageFilter", "CheckBox", nullptr));
+        label_3->setText(QApplication::translate("MessageFilter", "\345\215\201\345\205\255\350\277\233\345\210\266\347\255\233\351\200\211", nullptr));
+        radiohexFilter->setText(QApplication::translate("MessageFilter", "RadioButton", nullptr));
+        label->setText(QApplication::translate("MessageFilter", "\346\230\276\347\244\272\346\266\210\346\201\257\345\244\264", nullptr));
+        label_4->setText(QApplication::translate("MessageFilter", "\344\270\215\346\230\276\347\244\272\346\266\210\346\201\257\345\244\264", nullptr));
+        label_2->setText(QApplication::translate("MessageFilter", "\346\230\276\347\244\272\346\266\210\346\201\257\345\260\276", nullptr));
+        label_5->setText(QApplication::translate("MessageFilter", "\344\270\215\346\230\276\347\244\272\346\266\210\346\201\257\345\260\276", nullptr));
+        Save->setText(QApplication::translate("MessageFilter", "\344\277\235\345\255\230", nullptr));
+        Close->setText(QApplication::translate("MessageFilter", "\345\205\263\351\227\255", nullptr));
     } // retranslateUi
 
 };

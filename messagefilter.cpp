@@ -13,7 +13,7 @@ MessageFilter::~MessageFilter()
 {
     delete ui;
 }
-void MessageFilter::on_Save_clicked()
+void MessageFilter::save()
 {
     bool repeatIsOneDisplay  = ui->checkBoxDisOnce->isChecked();
     bool  IsHex = ui->radiohexFilter->isChecked();
@@ -23,7 +23,7 @@ void MessageFilter::on_Save_clicked()
     QString UnDisPlayTail = ui->EditUnDisplayTail->text();
     emit SetFilterOption(repeatIsOneDisplay,IsHex,DisPlayHead,UnDisplayHead,DisPlayTail,UnDisPlayTail);
 }
-void MessageFilter::on_Close_clicked()
+void MessageFilter::close()
 {
     this->close();
 }

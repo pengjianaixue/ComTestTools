@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	m_visibleComPortInfor(new QSerialPortInfo),
     m_btyeArray(""),
     m_sendLoopFlag(0),
-    m_psendCmd(nullptr),
+    m_sendCmd(nullptr),
     m_sendCount(0),
     m_sendIsRuning(false),
     m_sendthread(nullptr),
@@ -21,55 +21,38 @@ MainWindow::MainWindow(QWidget *parent) :
     m_bisHex(false),
     m_bisAddtimeTimestamp(false),
     m_recviThread(nullptr),
-    m_recviDataArray(nullptr),
     m_recviThreadRunFlag(false),
     m_nativeClassComport(nullptr),
     m_toolButton(nullptr),
     m_action(nullptr)
 {
-    m_psendCmd = new byte[9];
-    m_recviDataArray = new char[1024];
-    memset(m_recviDataArray,0,1024);
     m_qcomPort = new QSerialPort;
-    memset(m_psendCmd,0,9);
-    m_psendCmd[0] = 0xA7;
-    m_psendCmd[8] = 0xA8;
     m_sendNum = 0.001;
     m_filterSetDialog = new MessageFilter(this);
     m_filterSetDialog->hide();
-    m_filterSetDialog->setWindowTitle(tr("filter set"));
     ui->setupUi(this);
     Comparaminit();
     GetComparaminit();
-    SetLable();
+    setLable();
 	ConnectSlot();
     ui->Line_SendTimeGap->setText("10");
-    SetSendGap();
+    setLoopSendTimeGap();
     if(ui->radioSendHex->isChecked())
     {
         m_sendHexMode = true;
     }
-    m_toolButton = new QToolButton(this);
-    m_toolButton->setText(tr("clear set"));
-    QMenu *ptoolmeu = new QMenu(this);
-    m_action = new QAction(this);
-    m_action->setText(tr("clear display area"));
-    ptoolmeu->addAction(m_action);
-    m_toolButton->setMenu(ptoolmeu);
-    m_toolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    ui->mainToolBar->addWidget(m_toolButton);
     m_nativeClassComport =  new CSerialPort;
     GetComparamSetNative();
-    ui->Cmddisplay->setReadOnly(true);
+    ui->textbrowse_cmddisplay->setReadOnly(true);
     m_recviThreadRunFlag = true;
-    m_recviThread = new std::thread(&MainWindow::Recvidata,this,this);
+    m_recviThread = new std::thread(&MainWindow::recviData,this,this);
 }
 
 MainWindow::~MainWindow()
 {
   
 	delete ui;
-    delete[] m_psendCmd;
+    delete[] m_sendCmd;
     if(m_sendthread!=nullptr)
     {
         if(m_sendthread->joinable())
@@ -89,13 +72,11 @@ MainWindow::~MainWindow()
         }
     }
     delete m_nativeClassComport;
-    delete[] m_recviDataArray;
-    delete[] m_psendCmd;
     delete m_filterSetDialog;
     delete m_toolButton;
 
 }
-bool MainWindow::OpenCom()
+bool MainWindow::openComPort()
 {
     GetComparamSetNative();
     if(!m_nativeClassComport->InitPort(m_nativeComportParam.Comname.right(1).toInt(),m_nativeComportParam.ComBaudRate,
@@ -110,49 +91,52 @@ bool MainWindow::OpenCom()
                 return false;
 
     }
-	ui->ButtonLink->setEnabled(false);
+	ui->ButtonLink->setText(tr("关闭串口"));
+	ui->ButtonLink->setIcon(QIcon(":/rc/icon/resource/serial-port.png"));
+	disconnect(ui->ButtonLink, &QPushButton::clicked, this, &MainWindow::openComPort);
+	connect(ui->ButtonLink, &QPushButton::clicked, this, &MainWindow::closeComPort);
     return true;
 }
-bool MainWindow::CloseComPort()
+bool MainWindow::closeComPort()
 {
     m_sendLoopFlag = false;
     m_nativeClassComport->ClosePort();
-	ui->ButtonLink->setEnabled(true);
+	ui->ButtonLink->setText(tr("打开串口"));
+	ui->ButtonLink->setIcon(QIcon(":/rc/icon/resource/serial-port-on.png"));
+	disconnect(ui->ButtonLink, &QPushButton::clicked, this, &MainWindow::closeComPort);
+	connect(ui->ButtonLink, &QPushButton::clicked, this, &MainWindow::openComPort);
 	return true;
 }
 bool MainWindow::ComSendDatathread( )
 {
-    QSerialPort *SendLoop  = new QSerialPort(this);
-    GetComparam(SendLoop);
-    if(!SendLoop->open(QIODevice::ReadWrite))
+    QSerialPort SendLoop;
+    getComparam(&SendLoop);
+    if(!SendLoop.open(QIODevice::ReadWrite))
     {
-        delete SendLoop;
         return false;
 
     }
     std::string sendstr;
-    if(SendLoop->isOpen())
+    if(SendLoop.isOpen())
     {
         while(m_sendLoopFlag)
         {
 
-            if (SendLoop->isWritable())
+            if (SendLoop.isWritable())
             {
-                 SendCmd();
-                 int i = SendLoop->write((const char*)m_psendCmd, 9);
-                 SendLoop->waitForBytesWritten(25);
+                 int i = SendLoop.write((const char*)m_sendCmd, 9);
+                 SendLoop.waitForBytesWritten(25);
                  m_sendPackSum++;
                  emitpackSum(m_sendPackSum);
                  std::this_thread::sleep_for(std::chrono::milliseconds(m_sendTimeGap));
             }
         }
     }
-    SendLoop->close();
-    delete SendLoop;
+    SendLoop.close();
     return true;
 
 }
-bool MainWindow::ComSendData()
+bool MainWindow::comPortSendData()
 {
 
     std::string  SendTextstd;
@@ -186,58 +170,52 @@ bool MainWindow::ComSendData()
     }
     else
     {
-        QMessageBox::StandardButton reply = QMessageBox::information(this, tr("提示"),tr("请先打开串口"),reply);
+        QMessageBox::StandardButton reply = QMessageBox::information(this, tr("提示"),tr("请先打开串口"));
         if (reply == QMessageBox::Ok)
             return false;
         return false;
     }
     return true;
 }
-bool MainWindow::DisPlaysendsinfo(const char *cmdstr, int length)
+bool MainWindow::disPlaysendsinfo(const char *cmdstr, int length)
 {
-      std::string dispstr = HexToHexStr((const char*)(m_psendCmd),9);
-      ui->Cmddisplay->insertPlainText(dispstr.c_str());
+      std::string dispstr = HexToHexStr((const char*)(m_sendCmd),9);
+      ui->textbrowse_cmddisplay->insertPlainText(dispstr.c_str());
       return true;
 
 }
 
-bool MainWindow::DisPlaysendPackSum(size_t length)
+bool MainWindow::disPlaysendPackSum(size_t length)
 {
 
     ui->label_SendCount->setText(QString::number(length));
     return true;
 }
-bool MainWindow::SetSendGap()
+bool MainWindow::setLoopSendTimeGap()
 {
 
      m_sendTimeGap = ui->Line_SendTimeGap->text().toInt();
      return true;
 
 }
-bool MainWindow::DisplayuseTime(long long timeuse)
-{
-    ui->Line_UseTime->setText(QString::number(timeuse));
-    return true;
-
-}
-bool MainWindow::ChangSendStrType(bool mode)
+bool MainWindow::changSendStrType(bool mode)
 {
     m_sendHexMode = mode;
     return true;
 }
-bool MainWindow::scrolllast()
+bool MainWindow::scrollLast()
 {
-     QTextCursor cursor = ui->Cmddisplay->textCursor();
+     QTextCursor cursor = ui->textbrowse_cmddisplay->textCursor();
       cursor.movePosition(QTextCursor::End);
-      ui->Cmddisplay->setTextCursor(cursor);
+      ui->textbrowse_cmddisplay->setTextCursor(cursor);
       return true;
 }
-bool MainWindow::OpenFilterSetWindow()
+bool MainWindow::openFilterSetWindow()
 {
     m_filterSetDialog->open();
 	return true;
 }
-bool MainWindow::SetFilterParam(bool repeatIsOneDisplay, bool IsHex, QString DisPlayHead, QString UnDisplayHead, QString DisPlayTail, QString UnDisPlayTail)
+bool MainWindow::setFilterParam(bool repeatIsOneDisplay, bool IsHex, QString DisPlayHead, QString UnDisplayHead, QString DisPlayTail, QString UnDisPlayTail)
 {
     m_brepeatIsOneDisplay = repeatIsOneDisplay;
     m_bisHex = IsHex;
@@ -247,7 +225,7 @@ bool MainWindow::SetFilterParam(bool repeatIsOneDisplay, bool IsHex, QString Dis
     m_strUnDisPlayTail = UnDisPlayTail;
     return true;
 }
-bool MainWindow::SetTimestamp()
+bool MainWindow::setTimeStamp()
 {
     if(ui->checkBoxRecordTime->isChecked())
     {
@@ -260,31 +238,33 @@ bool MainWindow::SetTimestamp()
     return true;
 }
 
-void MainWindow::Recvidata(MainWindow *pwin)
+void MainWindow::recviData(MainWindow* pwin)
 {
         while(m_recviThreadRunFlag)
         {
+			char recviDataArray[2048] = { 0 };
             if(m_nativeClassComport->IsOpen()&&m_nativeClassComport->GetBytesInCOM()>0)
             {
-                    unsigned long   nReadlength = 1024;
-                    memset(m_recviDataArray,0,1024);
-                    if(m_nativeClassComport->ReadComPort(m_recviDataArray,nReadlength))
+                    unsigned long  nReadlength = 64;
+                    memset(recviDataArray,0,2048);
+                    if(m_nativeClassComport->ReadComPort(recviDataArray,nReadlength))
                     {
-                        QString recvidata(m_recviDataArray);
+                        QString recvidata(recviDataArray);
                         emitRecviData(recvidata);
                     }
             }
         }
 }
 
-void MainWindow::DisPlayRecvData(QString data)
+void MainWindow::disPlayRecvData(QString data)
 {
-    ui->Cmddisplay->append(data);
+    //ui->textbrowse_cmddisplay->setLineWrapMode(QTextEdit::LineWrapMode::WidgetWidth);
+	ContextDisPlay(data, 0, m_sendHexMode);
 
 }
 void MainWindow::clearDisPlayContent()
 {
-    ui->Cmddisplay->clear();
+    ui->textbrowse_cmddisplay->clear();
 }
 bool MainWindow::GetComparaminit()
 {
@@ -341,10 +321,10 @@ bool MainWindow::GetComparamSetNative()
 
 
 }
-void MainWindow::on_ButtonopenFile_clicked()
+void MainWindow::openFile()
 {
 
-    ui->Cmddisplay->clear();
+    ui->textbrowse_cmddisplay->clear();
     m_cmdfile.clear();
     QString windowcaption;
     windowcaption= m_codec->toUnicode("打开命令文件");
@@ -372,11 +352,11 @@ void MainWindow::on_ButtonopenFile_clicked()
 		}
         m_cmdfile  += StrNotSpace + "\r\n";
     }
-    ui->Cmddisplay->setPlainText(m_cmdfile);
+    ui->textbrowse_cmddisplay->setPlainText(m_cmdfile);
     qDebug()<<m_cmdfile;
 }
 
-bool MainWindow::GetComparam(QSerialPort *SetPort)
+bool MainWindow::getComparam(QSerialPort *setPort)
 {	
         QString  PortName = ui->COMPort->currentText();
         int BuadRate = ui->BuadRate->currentText().toInt();
@@ -384,114 +364,43 @@ bool MainWindow::GetComparam(QSerialPort *SetPort)
         int Stopbit = ui->StopBit->currentText().toInt();
         int checkway = ui->CheckBit->currentText().toInt();
         int StreamCtrl = ui->StreamCtrl->currentText().toInt();
-        SetPort->setPortName(PortName);
-        SetPort->setBaudRate(BuadRate);
-        SetPort->setDataBits(QSerialPort::DataBits(Databit));
-        SetPort->setStopBits(QSerialPort::StopBits(Stopbit));//此处如果停止位在1.5位时会有问题
-        SetPort->setParity(QSerialPort::EvenParity);
-        SetPort->setDataErrorPolicy(QSerialPort::DataErrorPolicy(checkway));
-        SetPort->setFlowControl(QSerialPort::FlowControl(StreamCtrl));
+        setPort->setPortName(PortName);
+        setPort->setBaudRate(BuadRate);
+        setPort->setDataBits(QSerialPort::DataBits(Databit));
+        setPort->setStopBits(QSerialPort::StopBits(Stopbit));//此处如果停止位在1.5位时会有问题
+        setPort->setParity(QSerialPort::EvenParity);
+        setPort->setDataErrorPolicy(QSerialPort::DataErrorPolicy(checkway));
+        setPort->setFlowControl(QSerialPort::FlowControl(StreamCtrl));
         return false;
 
 }
 
-bool MainWindow::SetLable()
+bool MainWindow::setLable()
 {
         return true;
 }
 bool MainWindow::ConnectSlot()
 {
-	
-	connect(ui->ButtonLink,&QPushButton::clicked,this,&MainWindow::OpenCom);
-	connect(ui->ButtonStopSend, &QPushButton::clicked, this, &MainWindow::CloseComPort);
-	connect(ui->ButtonSend, &QPushButton::clicked, this, &MainWindow::ComSendData);
+	connect(ui->ButtonLink,&QPushButton::clicked,this,&MainWindow::openComPort);
+	connect(ui->pushButton_cleandiaplay, &QPushButton::clicked, this->ui->textbrowse_cmddisplay, &QTextBrowser::clear);
+	connect(ui->ButtonSend, &QPushButton::clicked, this, &MainWindow::comPortSendData);
     connect(ui->push_SendLoop, &QPushButton::clicked, this, &MainWindow::SendLoop);
     connect(ui->PushStopSend, &QPushButton::clicked, this, &MainWindow::SendStop);
-    connect(this,SIGNAL(emitpackSum(size_t)),this,SLOT(DisPlaysendPackSum(size_t)));
-    connect(this,SIGNAL(emitSnedStr(const char*,int)),this,SLOT(DisPlaysendsinfo(const char*,int)),Qt::DirectConnection);
-    connect(this->ui->Line_SendTimeGap,&QLineEdit::textChanged,this,&MainWindow::SetSendGap);
-    connect(this,&MainWindow::emitUsetime,this,&MainWindow::DisplayuseTime);
-    connect(this->ui->radioSendHex,&QRadioButton::toggled,this,&MainWindow::ChangSendStrType);
-    connect(this->ui->Cmddisplay,&QTextEdit::textChanged,this,&MainWindow::scrolllast);
-    connect(this->ui->MessageFilter,&QPushButton::clicked,this,&MainWindow::OpenFilterSetWindow);
-    connect(this->m_filterSetDialog,&MessageFilter::SetFilterOption,this,&MainWindow::SetFilterParam);
-    connect(this->ui->checkBoxRecordTime,&QRadioButton::toggled,this,&MainWindow::SetTimestamp);
-    connect(this, &MainWindow::emitRecviData,this, &MainWindow::DisPlayRecvData);
-    connect(this->m_action,&QAction::triggered,this,&MainWindow::clearDisPlayContent);
-    connect(this->ui->mainToolBar,&QToolBar::actionTriggered,this,&MainWindow::clearDisPlayContent);
+    connect(this,SIGNAL(emitpackSum(size_t)),this,SLOT(disPlaysendPackSum(size_t)));
+    connect(this,SIGNAL(emitSnedStr(const char*,int)),this,SLOT(disPlaysendsinfo(const char*,int)),Qt::DirectConnection);
+    connect(this->ui->Line_SendTimeGap,&QLineEdit::textChanged,this,&MainWindow::setLoopSendTimeGap);
+    connect(this->ui->radioSendHex,&QRadioButton::toggled,this,&MainWindow::changSendStrType);
+    connect(this->ui->textbrowse_cmddisplay,&QTextEdit::textChanged,this,&MainWindow::scrollLast);
+    connect(this->ui->MessageFilter,&QPushButton::clicked,this,&MainWindow::openFilterSetWindow);
+    connect(this->m_filterSetDialog,&MessageFilter::SetFilterOption,this,&MainWindow::setFilterParam);
+    connect(this->ui->checkBoxRecordTime,&QRadioButton::toggled,this,&MainWindow::setTimeStamp);
+    connect(this, &MainWindow::emitRecviData,this, &MainWindow::disPlayRecvData);
     return true;
-}
-bool MainWindow::SendCmd()
-{
-
-    char *str = nullptr;
-    unsigned char Max[1] = {0x99};
-    std::string CheckNUm;
-    if(m_psendCmd[3]<Max[0])
-    {
-        SetSendNum(m_psendCmd,3);
-    }
-    else
-    {
-        m_psendCmd[3] = 0x00 ;
-        if(m_psendCmd[2]<Max[0])
-        {
-            SetSendNum(m_psendCmd,2);
-        }
-        else
-        {
-            m_psendCmd[2] = 0x00;
-            if(m_psendCmd[1]<Max[0])
-            {
-                SetSendNum(m_psendCmd,1);
-            }
-            else
-            {
-                 m_psendCmd[1]  = 0x00;
-                 m_psendCmd[2]  = 0x00;
-                 m_psendCmd[3]  = 0x00;
-            }
-        }
-    }
-
-    if(m_psendCmd[6]< Max[0])
-    {
-        SetSendNum(m_psendCmd,6);
-    }
-    else
-    {
-        m_psendCmd[6] = 0x00 ;
-        if(m_psendCmd[5]<Max[0])
-        {
-            SetSendNum(m_psendCmd,5);
-        }
-        else
-        {
-            m_psendCmd[5] = 0x00;
-            if(m_psendCmd[4]<Max[0])
-            {
-                SetSendNum(m_psendCmd,4);
-            }
-            else
-            {
-                 m_psendCmd[4]  = 0x00;
-                 m_psendCmd[5]  = 0x00;
-                 m_psendCmd[6]  = 0x00;
-            }
-        }
-    }
-    CheckNUm = "0x"+ std::to_string(CalculateSumCheck(m_psendCmd,1));
-    m_psendCmd[7] =   strtol(CheckNUm.c_str(), &str, 16);
-    return true;
-
 }
 
 bool MainWindow::SendLoop()
 {
 
-     memset(m_psendCmd,0,9);
-     m_psendCmd[0] = 0xA7;
-     m_psendCmd[8] = 0xA8;
      ui->label_SendCount->clear();
      m_sendLoopFlag =true;
      if( m_sendthread == nullptr)
@@ -541,21 +450,21 @@ bool MainWindow::ContextDisPlay(const QString &Discontext,unsigned int DisplayDi
 {
     QString  DisText;
     QString nowtime;
-    if(this->m_bisAddtimeTimestamp)
-    {
-        QDateTime now = QDateTime::currentDateTime();
-        nowtime = now.toString("hh:mm:ss.zzz");
-        DisText  = DisText +"time:"+nowtime+"--";
-    }
+	if (this->m_bisAddtimeTimestamp)
+	{
+		QDateTime now = QDateTime::currentDateTime();
+		nowtime = now.toString("hh:mm:ss.zzz");
+		DisText = DisText + "time: " + nowtime + " -> ";
+	}
     //Send
     if(DisplayDirct == 1)
     {
-          DisText  = DisText + QObject::tr("发送: ") +Discontext;
+          DisText  = DisText + QObject::tr("send: ") + Discontext;
     }
-    //Recvi
+    //Receive
     else if(DisplayDirct == 0)
     {
-          DisText  = DisText + QObject::tr("接收: ")+Discontext;
+          DisText  = DisText + QObject::tr("receive: ") + Discontext;
     }
     else
     {
@@ -569,7 +478,7 @@ bool MainWindow::ContextDisPlay(const QString &Discontext,unsigned int DisplayDi
     {
         DisText+=" (ASCII)";
     }
-    ui->Cmddisplay->append(DisText);
+    ui->textbrowse_cmddisplay->append(DisText);
 
 }
 unsigned int   MainWindow::CalculateSumCheck(  byte *ProtocolStore,   uint32_t ProtocolHead)
@@ -662,7 +571,7 @@ QByteArray MainWindow::hexStringtoByteArray(QString hex)
 }
 bool MainWindow::GetVisibleComPort()
 {
-	foreach(const QSerialPortInfo &info, QSerialPortInfo::availablePorts())
+	Q_FOREACH(const QSerialPortInfo &info, QSerialPortInfo::availablePorts())
 	{
 		QString ComportInfo;
 		ComportInfo =   info.portName();

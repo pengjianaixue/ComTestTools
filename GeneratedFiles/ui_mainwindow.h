@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.13.1
+** Created by: Qt User Interface Compiler version 5.12.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,11 +10,11 @@
 #define UI_MAINWINDOW_H
 
 #include <QtCore/QVariant>
+#include <QtGui/QIcon>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
-#include <QtWidgets/QFormLayout>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
@@ -25,7 +25,9 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QRadioButton>
+#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
@@ -36,47 +38,66 @@ QT_BEGIN_NAMESPACE
 class Ui_MainWindow
 {
 public:
+    QAction *openComportAction;
+    QAction *startRecordAction;
     QWidget *centralWidget;
-    QGridLayout *gridLayout;
-    QFormLayout *formLayout_3;
-    QVBoxLayout *verticalLayout_2;
+    QGridLayout *gridLayout_2;
+    QHBoxLayout *horizontalLayout_10;
+    QWidget *widget_comparamset;
+    QVBoxLayout *verticalLayout_6;
     QGroupBox *formGroupBox;
-    QFormLayout *formLayout;
+    QVBoxLayout *verticalLayout_12;
+    QHBoxLayout *horizontalLayout_5;
+    QVBoxLayout *verticalLayout_3;
     QLabel *label;
-    QComboBox *COMPort;
     QLabel *label_2;
-    QComboBox *BuadRate;
     QLabel *label_3;
-    QComboBox *DataBit;
     QLabel *label_4;
-    QComboBox *StopBit;
     QLabel *label_5;
-    QComboBox *CheckBit;
     QLabel *label_6;
+    QVBoxLayout *verticalLayout_4;
+    QComboBox *COMPort;
+    QComboBox *BuadRate;
+    QComboBox *DataBit;
+    QComboBox *StopBit;
+    QComboBox *CheckBit;
     QComboBox *StreamCtrl;
+    QHBoxLayout *horizontalLayout_7;
+    QVBoxLayout *verticalLayout_5;
     QRadioButton *RadioAscii;
-    QRadioButton *radioHex;
     QCheckBox *checkBoxRecordTime;
+    QVBoxLayout *verticalLayout_11;
+    QRadioButton *radioHex;
     QPushButton *MessageFilter;
-    QLabel *label_7;
-    QLabel *label_SendCount;
-    QLabel *label_8;
-    QLineEdit *Line_SendTimeGap;
-    QLabel *label_9;
-    QLineEdit *Line_UseTime;
-    QPushButton *ButtonLink;
-    QPushButton *ButtonStopSend;
-    QPushButton *push_SendLoop;
-    QPushButton *ButtonopenFile;
+    QHBoxLayout *horizontalLayout_6;
     QVBoxLayout *verticalLayout;
+    QLabel *label_7;
+    QLabel *label_8;
+    QVBoxLayout *verticalLayout_2;
+    QLabel *label_SendCount;
+    QLineEdit *Line_SendTimeGap;
+    QPushButton *ButtonLink;
+    QVBoxLayout *verticalLayout_10;
+    QVBoxLayout *verticalLayout_8;
+    QHBoxLayout *horizontalLayout_9;
     QLabel *label_11;
-    QTextEdit *Cmddisplay;
+    QSpacerItem *horizontalSpacer_3;
+    QPushButton *pushButton_cleandiaplay;
+    QTextBrowser *textbrowse_cmddisplay;
+    QGroupBox *groupBox;
+    QGridLayout *gridLayout;
+    QVBoxLayout *verticalLayout_9;
     QHBoxLayout *horizontalLayout;
     QLabel *label_10;
     QRadioButton *radioSendHex;
     QTextEdit *SendTextEdit;
+    QHBoxLayout *horizontalLayout_3;
+    QSpacerItem *horizontalSpacer;
     QPushButton *ButtonSend;
+    QHBoxLayout *horizontalLayout_2;
+    QSpacerItem *horizontalSpacer_2;
     QPushButton *PushStopSend;
+    QPushButton *push_SendLoop;
     QMenuBar *menuBar;
     QMenu *menu;
     QToolBar *mainToolBar;
@@ -86,256 +107,383 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(686, 504);
+        MainWindow->resize(798, 604);
+        openComportAction = new QAction(MainWindow);
+        openComportAction->setObjectName(QString::fromUtf8("openComportAction"));
+        QIcon icon;
+        icon.addFile(QString::fromUtf8(":/rc/icon/resource/serial-port-on.png"), QSize(), QIcon::Normal, QIcon::Off);
+        openComportAction->setIcon(icon);
+        startRecordAction = new QAction(MainWindow);
+        startRecordAction->setObjectName(QString::fromUtf8("startRecordAction"));
+        startRecordAction->setCheckable(true);
+        QIcon icon1;
+        icon1.addFile(QString::fromUtf8(":/rc/icon/resource/record-off.png"), QSize(), QIcon::Normal, QIcon::Off);
+        startRecordAction->setIcon(icon1);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
-        gridLayout = new QGridLayout(centralWidget);
-        gridLayout->setSpacing(6);
-        gridLayout->setContentsMargins(11, 11, 11, 11);
-        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        formLayout_3 = new QFormLayout();
-        formLayout_3->setSpacing(6);
-        formLayout_3->setObjectName(QString::fromUtf8("formLayout_3"));
-        verticalLayout_2 = new QVBoxLayout();
-        verticalLayout_2->setSpacing(6);
-        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
-        verticalLayout_2->setSizeConstraint(QLayout::SetFixedSize);
-        verticalLayout_2->setContentsMargins(-1, -1, 0, -1);
-        formGroupBox = new QGroupBox(centralWidget);
+        gridLayout_2 = new QGridLayout(centralWidget);
+        gridLayout_2->setSpacing(6);
+        gridLayout_2->setContentsMargins(11, 11, 11, 11);
+        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
+        horizontalLayout_10 = new QHBoxLayout();
+        horizontalLayout_10->setSpacing(6);
+        horizontalLayout_10->setObjectName(QString::fromUtf8("horizontalLayout_10"));
+        widget_comparamset = new QWidget(centralWidget);
+        widget_comparamset->setObjectName(QString::fromUtf8("widget_comparamset"));
+        verticalLayout_6 = new QVBoxLayout(widget_comparamset);
+        verticalLayout_6->setSpacing(6);
+        verticalLayout_6->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_6->setObjectName(QString::fromUtf8("verticalLayout_6"));
+        formGroupBox = new QGroupBox(widget_comparamset);
         formGroupBox->setObjectName(QString::fromUtf8("formGroupBox"));
-        QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(formGroupBox->sizePolicy().hasHeightForWidth());
         formGroupBox->setSizePolicy(sizePolicy);
-        formGroupBox->setMaximumSize(QSize(180, 16777215));
-        formLayout = new QFormLayout(formGroupBox);
-        formLayout->setSpacing(6);
-        formLayout->setContentsMargins(11, 11, 11, 11);
-        formLayout->setObjectName(QString::fromUtf8("formLayout"));
+        formGroupBox->setMaximumSize(QSize(16777215, 16777215));
+        verticalLayout_12 = new QVBoxLayout(formGroupBox);
+        verticalLayout_12->setSpacing(6);
+        verticalLayout_12->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_12->setObjectName(QString::fromUtf8("verticalLayout_12"));
+        horizontalLayout_5 = new QHBoxLayout();
+        horizontalLayout_5->setSpacing(6);
+        horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
+        verticalLayout_3 = new QVBoxLayout();
+        verticalLayout_3->setSpacing(6);
+        verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
         label = new QLabel(formGroupBox);
         label->setObjectName(QString::fromUtf8("label"));
 
-        formLayout->setWidget(1, QFormLayout::LabelRole, label);
-
-        COMPort = new QComboBox(formGroupBox);
-        COMPort->setObjectName(QString::fromUtf8("COMPort"));
-
-        formLayout->setWidget(1, QFormLayout::FieldRole, COMPort);
+        verticalLayout_3->addWidget(label);
 
         label_2 = new QLabel(formGroupBox);
         label_2->setObjectName(QString::fromUtf8("label_2"));
 
-        formLayout->setWidget(2, QFormLayout::LabelRole, label_2);
-
-        BuadRate = new QComboBox(formGroupBox);
-        BuadRate->setObjectName(QString::fromUtf8("BuadRate"));
-
-        formLayout->setWidget(2, QFormLayout::FieldRole, BuadRate);
+        verticalLayout_3->addWidget(label_2);
 
         label_3 = new QLabel(formGroupBox);
         label_3->setObjectName(QString::fromUtf8("label_3"));
 
-        formLayout->setWidget(3, QFormLayout::LabelRole, label_3);
-
-        DataBit = new QComboBox(formGroupBox);
-        DataBit->setObjectName(QString::fromUtf8("DataBit"));
-
-        formLayout->setWidget(3, QFormLayout::FieldRole, DataBit);
+        verticalLayout_3->addWidget(label_3);
 
         label_4 = new QLabel(formGroupBox);
         label_4->setObjectName(QString::fromUtf8("label_4"));
 
-        formLayout->setWidget(4, QFormLayout::LabelRole, label_4);
-
-        StopBit = new QComboBox(formGroupBox);
-        StopBit->setObjectName(QString::fromUtf8("StopBit"));
-
-        formLayout->setWidget(4, QFormLayout::FieldRole, StopBit);
+        verticalLayout_3->addWidget(label_4);
 
         label_5 = new QLabel(formGroupBox);
         label_5->setObjectName(QString::fromUtf8("label_5"));
 
-        formLayout->setWidget(5, QFormLayout::LabelRole, label_5);
-
-        CheckBit = new QComboBox(formGroupBox);
-        CheckBit->setObjectName(QString::fromUtf8("CheckBit"));
-
-        formLayout->setWidget(5, QFormLayout::FieldRole, CheckBit);
+        verticalLayout_3->addWidget(label_5);
 
         label_6 = new QLabel(formGroupBox);
         label_6->setObjectName(QString::fromUtf8("label_6"));
 
-        formLayout->setWidget(6, QFormLayout::LabelRole, label_6);
+        verticalLayout_3->addWidget(label_6);
+
+
+        horizontalLayout_5->addLayout(verticalLayout_3);
+
+        verticalLayout_4 = new QVBoxLayout();
+        verticalLayout_4->setSpacing(6);
+        verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
+        COMPort = new QComboBox(formGroupBox);
+        COMPort->setObjectName(QString::fromUtf8("COMPort"));
+
+        verticalLayout_4->addWidget(COMPort);
+
+        BuadRate = new QComboBox(formGroupBox);
+        BuadRate->setObjectName(QString::fromUtf8("BuadRate"));
+
+        verticalLayout_4->addWidget(BuadRate);
+
+        DataBit = new QComboBox(formGroupBox);
+        DataBit->setObjectName(QString::fromUtf8("DataBit"));
+
+        verticalLayout_4->addWidget(DataBit);
+
+        StopBit = new QComboBox(formGroupBox);
+        StopBit->setObjectName(QString::fromUtf8("StopBit"));
+
+        verticalLayout_4->addWidget(StopBit);
+
+        CheckBit = new QComboBox(formGroupBox);
+        CheckBit->setObjectName(QString::fromUtf8("CheckBit"));
+
+        verticalLayout_4->addWidget(CheckBit);
 
         StreamCtrl = new QComboBox(formGroupBox);
         StreamCtrl->setObjectName(QString::fromUtf8("StreamCtrl"));
 
-        formLayout->setWidget(6, QFormLayout::FieldRole, StreamCtrl);
+        verticalLayout_4->addWidget(StreamCtrl);
 
+
+        horizontalLayout_5->addLayout(verticalLayout_4);
+
+        horizontalLayout_5->setStretch(0, 3);
+        horizontalLayout_5->setStretch(1, 6);
+
+        verticalLayout_12->addLayout(horizontalLayout_5);
+
+        horizontalLayout_7 = new QHBoxLayout();
+        horizontalLayout_7->setSpacing(6);
+        horizontalLayout_7->setObjectName(QString::fromUtf8("horizontalLayout_7"));
+        verticalLayout_5 = new QVBoxLayout();
+        verticalLayout_5->setSpacing(6);
+        verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
         RadioAscii = new QRadioButton(formGroupBox);
         RadioAscii->setObjectName(QString::fromUtf8("RadioAscii"));
+        QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(RadioAscii->sizePolicy().hasHeightForWidth());
+        RadioAscii->setSizePolicy(sizePolicy1);
+        RadioAscii->setMinimumSize(QSize(96, 0));
 
-        formLayout->setWidget(7, QFormLayout::LabelRole, RadioAscii);
-
-        radioHex = new QRadioButton(formGroupBox);
-        radioHex->setObjectName(QString::fromUtf8("radioHex"));
-
-        formLayout->setWidget(7, QFormLayout::FieldRole, radioHex);
+        verticalLayout_5->addWidget(RadioAscii);
 
         checkBoxRecordTime = new QCheckBox(formGroupBox);
         checkBoxRecordTime->setObjectName(QString::fromUtf8("checkBoxRecordTime"));
+        sizePolicy1.setHeightForWidth(checkBoxRecordTime->sizePolicy().hasHeightForWidth());
+        checkBoxRecordTime->setSizePolicy(sizePolicy1);
+        checkBoxRecordTime->setMinimumSize(QSize(96, 0));
 
-        formLayout->setWidget(8, QFormLayout::LabelRole, checkBoxRecordTime);
+        verticalLayout_5->addWidget(checkBoxRecordTime);
+
+
+        horizontalLayout_7->addLayout(verticalLayout_5);
+
+        verticalLayout_11 = new QVBoxLayout();
+        verticalLayout_11->setSpacing(6);
+        verticalLayout_11->setObjectName(QString::fromUtf8("verticalLayout_11"));
+        radioHex = new QRadioButton(formGroupBox);
+        radioHex->setObjectName(QString::fromUtf8("radioHex"));
+        radioHex->setMinimumSize(QSize(50, 0));
+
+        verticalLayout_11->addWidget(radioHex);
 
         MessageFilter = new QPushButton(formGroupBox);
         MessageFilter->setObjectName(QString::fromUtf8("MessageFilter"));
-        sizePolicy.setHeightForWidth(MessageFilter->sizePolicy().hasHeightForWidth());
-        MessageFilter->setSizePolicy(sizePolicy);
+        QSizePolicy sizePolicy2(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(MessageFilter->sizePolicy().hasHeightForWidth());
+        MessageFilter->setSizePolicy(sizePolicy2);
         MessageFilter->setMinimumSize(QSize(60, 0));
 
-        formLayout->setWidget(8, QFormLayout::FieldRole, MessageFilter);
+        verticalLayout_11->addWidget(MessageFilter);
 
+
+        horizontalLayout_7->addLayout(verticalLayout_11);
+
+
+        verticalLayout_12->addLayout(horizontalLayout_7);
+
+        horizontalLayout_6 = new QHBoxLayout();
+        horizontalLayout_6->setSpacing(6);
+        horizontalLayout_6->setObjectName(QString::fromUtf8("horizontalLayout_6"));
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setSpacing(6);
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         label_7 = new QLabel(formGroupBox);
         label_7->setObjectName(QString::fromUtf8("label_7"));
+        label_7->setMinimumSize(QSize(0, 20));
 
-        formLayout->setWidget(9, QFormLayout::LabelRole, label_7);
-
-        label_SendCount = new QLabel(formGroupBox);
-        label_SendCount->setObjectName(QString::fromUtf8("label_SendCount"));
-
-        formLayout->setWidget(9, QFormLayout::FieldRole, label_SendCount);
+        verticalLayout->addWidget(label_7);
 
         label_8 = new QLabel(formGroupBox);
         label_8->setObjectName(QString::fromUtf8("label_8"));
 
-        formLayout->setWidget(10, QFormLayout::LabelRole, label_8);
+        verticalLayout->addWidget(label_8);
+
+
+        horizontalLayout_6->addLayout(verticalLayout);
+
+        verticalLayout_2 = new QVBoxLayout();
+        verticalLayout_2->setSpacing(6);
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+        label_SendCount = new QLabel(formGroupBox);
+        label_SendCount->setObjectName(QString::fromUtf8("label_SendCount"));
+        QSizePolicy sizePolicy3(QSizePolicy::Preferred, QSizePolicy::Fixed);
+        sizePolicy3.setHorizontalStretch(0);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(label_SendCount->sizePolicy().hasHeightForWidth());
+        label_SendCount->setSizePolicy(sizePolicy3);
+        label_SendCount->setMinimumSize(QSize(0, 20));
+        label_SendCount->setMaximumSize(QSize(60, 16777215));
+
+        verticalLayout_2->addWidget(label_SendCount);
 
         Line_SendTimeGap = new QLineEdit(formGroupBox);
         Line_SendTimeGap->setObjectName(QString::fromUtf8("Line_SendTimeGap"));
+        Line_SendTimeGap->setMaximumSize(QSize(60, 16777215));
 
-        formLayout->setWidget(10, QFormLayout::FieldRole, Line_SendTimeGap);
-
-        label_9 = new QLabel(formGroupBox);
-        label_9->setObjectName(QString::fromUtf8("label_9"));
-
-        formLayout->setWidget(11, QFormLayout::LabelRole, label_9);
-
-        Line_UseTime = new QLineEdit(formGroupBox);
-        Line_UseTime->setObjectName(QString::fromUtf8("Line_UseTime"));
-
-        formLayout->setWidget(11, QFormLayout::FieldRole, Line_UseTime);
+        verticalLayout_2->addWidget(Line_SendTimeGap);
 
 
-        verticalLayout_2->addWidget(formGroupBox);
+        horizontalLayout_6->addLayout(verticalLayout_2);
 
-        ButtonLink = new QPushButton(centralWidget);
+
+        verticalLayout_12->addLayout(horizontalLayout_6);
+
+        verticalLayout_12->setStretch(0, 7);
+        verticalLayout_12->setStretch(1, 1);
+        verticalLayout_12->setStretch(2, 2);
+
+        verticalLayout_6->addWidget(formGroupBox);
+
+        ButtonLink = new QPushButton(widget_comparamset);
         ButtonLink->setObjectName(QString::fromUtf8("ButtonLink"));
-        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(ButtonLink->sizePolicy().hasHeightForWidth());
-        ButtonLink->setSizePolicy(sizePolicy1);
+        QSizePolicy sizePolicy4(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy4.setHorizontalStretch(0);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(ButtonLink->sizePolicy().hasHeightForWidth());
+        ButtonLink->setSizePolicy(sizePolicy4);
         ButtonLink->setMaximumSize(QSize(180, 16777215));
         ButtonLink->setLayoutDirection(Qt::LeftToRight);
         ButtonLink->setStyleSheet(QString::fromUtf8("QPushButton{ color: rgb(255, 0, 0)}"));
+        ButtonLink->setIcon(icon);
 
-        verticalLayout_2->addWidget(ButtonLink);
-
-        ButtonStopSend = new QPushButton(centralWidget);
-        ButtonStopSend->setObjectName(QString::fromUtf8("ButtonStopSend"));
-        sizePolicy1.setHeightForWidth(ButtonStopSend->sizePolicy().hasHeightForWidth());
-        ButtonStopSend->setSizePolicy(sizePolicy1);
-        ButtonStopSend->setMaximumSize(QSize(180, 16777215));
-        ButtonStopSend->setStyleSheet(QString::fromUtf8("QPushButton{color:rgb(255, 170, 0)}"));
-
-        verticalLayout_2->addWidget(ButtonStopSend);
-
-        push_SendLoop = new QPushButton(centralWidget);
-        push_SendLoop->setObjectName(QString::fromUtf8("push_SendLoop"));
-        sizePolicy1.setHeightForWidth(push_SendLoop->sizePolicy().hasHeightForWidth());
-        push_SendLoop->setSizePolicy(sizePolicy1);
-        push_SendLoop->setMaximumSize(QSize(180, 16777215));
-
-        verticalLayout_2->addWidget(push_SendLoop);
-
-        ButtonopenFile = new QPushButton(centralWidget);
-        ButtonopenFile->setObjectName(QString::fromUtf8("ButtonopenFile"));
-        sizePolicy1.setHeightForWidth(ButtonopenFile->sizePolicy().hasHeightForWidth());
-        ButtonopenFile->setSizePolicy(sizePolicy1);
-        ButtonopenFile->setMaximumSize(QSize(180, 16777215));
-
-        verticalLayout_2->addWidget(ButtonopenFile);
+        verticalLayout_6->addWidget(ButtonLink);
 
 
-        formLayout_3->setLayout(0, QFormLayout::LabelRole, verticalLayout_2);
+        horizontalLayout_10->addWidget(widget_comparamset);
 
-        verticalLayout = new QVBoxLayout();
-        verticalLayout->setSpacing(6);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        verticalLayout->setSizeConstraint(QLayout::SetFixedSize);
+        verticalLayout_10 = new QVBoxLayout();
+        verticalLayout_10->setSpacing(6);
+        verticalLayout_10->setObjectName(QString::fromUtf8("verticalLayout_10"));
+        verticalLayout_8 = new QVBoxLayout();
+        verticalLayout_8->setSpacing(6);
+        verticalLayout_8->setObjectName(QString::fromUtf8("verticalLayout_8"));
+        horizontalLayout_9 = new QHBoxLayout();
+        horizontalLayout_9->setSpacing(6);
+        horizontalLayout_9->setObjectName(QString::fromUtf8("horizontalLayout_9"));
         label_11 = new QLabel(centralWidget);
         label_11->setObjectName(QString::fromUtf8("label_11"));
-        QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Preferred);
-        sizePolicy2.setHorizontalStretch(0);
-        sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(label_11->sizePolicy().hasHeightForWidth());
-        label_11->setSizePolicy(sizePolicy2);
+        sizePolicy1.setHeightForWidth(label_11->sizePolicy().hasHeightForWidth());
+        label_11->setSizePolicy(sizePolicy1);
 
-        verticalLayout->addWidget(label_11);
+        horizontalLayout_9->addWidget(label_11);
 
-        Cmddisplay = new QTextEdit(centralWidget);
-        Cmddisplay->setObjectName(QString::fromUtf8("Cmddisplay"));
+        horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        verticalLayout->addWidget(Cmddisplay);
+        horizontalLayout_9->addItem(horizontalSpacer_3);
 
+        pushButton_cleandiaplay = new QPushButton(centralWidget);
+        pushButton_cleandiaplay->setObjectName(QString::fromUtf8("pushButton_cleandiaplay"));
+        QIcon icon2;
+        icon2.addFile(QString::fromUtf8(":/rc/icon/resource/clean.png"), QSize(), QIcon::Normal, QIcon::Off);
+        pushButton_cleandiaplay->setIcon(icon2);
+
+        horizontalLayout_9->addWidget(pushButton_cleandiaplay);
+
+
+        verticalLayout_8->addLayout(horizontalLayout_9);
+
+        textbrowse_cmddisplay = new QTextBrowser(centralWidget);
+        textbrowse_cmddisplay->setObjectName(QString::fromUtf8("textbrowse_cmddisplay"));
+
+        verticalLayout_8->addWidget(textbrowse_cmddisplay);
+
+
+        verticalLayout_10->addLayout(verticalLayout_8);
+
+        groupBox = new QGroupBox(centralWidget);
+        groupBox->setObjectName(QString::fromUtf8("groupBox"));
+        gridLayout = new QGridLayout(groupBox);
+        gridLayout->setSpacing(6);
+        gridLayout->setContentsMargins(11, 11, 11, 11);
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+        verticalLayout_9 = new QVBoxLayout();
+        verticalLayout_9->setSpacing(6);
+        verticalLayout_9->setObjectName(QString::fromUtf8("verticalLayout_9"));
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        label_10 = new QLabel(centralWidget);
+        label_10 = new QLabel(groupBox);
         label_10->setObjectName(QString::fromUtf8("label_10"));
         label_10->setMaximumSize(QSize(50, 16777215));
 
         horizontalLayout->addWidget(label_10);
 
-        radioSendHex = new QRadioButton(centralWidget);
+        radioSendHex = new QRadioButton(groupBox);
         radioSendHex->setObjectName(QString::fromUtf8("radioSendHex"));
 
         horizontalLayout->addWidget(radioSendHex);
 
 
-        verticalLayout->addLayout(horizontalLayout);
+        verticalLayout_9->addLayout(horizontalLayout);
 
-        SendTextEdit = new QTextEdit(centralWidget);
+        SendTextEdit = new QTextEdit(groupBox);
         SendTextEdit->setObjectName(QString::fromUtf8("SendTextEdit"));
         SendTextEdit->setMaximumSize(QSize(16777215, 30));
 
-        verticalLayout->addWidget(SendTextEdit);
+        verticalLayout_9->addWidget(SendTextEdit);
 
-        ButtonSend = new QPushButton(centralWidget);
+        horizontalLayout_3 = new QHBoxLayout();
+        horizontalLayout_3->setSpacing(6);
+        horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
+        horizontalSpacer = new QSpacerItem(250, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_3->addItem(horizontalSpacer);
+
+        ButtonSend = new QPushButton(groupBox);
         ButtonSend->setObjectName(QString::fromUtf8("ButtonSend"));
-        sizePolicy1.setHeightForWidth(ButtonSend->sizePolicy().hasHeightForWidth());
-        ButtonSend->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(ButtonSend->sizePolicy().hasHeightForWidth());
+        ButtonSend->setSizePolicy(sizePolicy2);
+        ButtonSend->setAutoRepeat(true);
 
-        verticalLayout->addWidget(ButtonSend);
+        horizontalLayout_3->addWidget(ButtonSend);
 
-        PushStopSend = new QPushButton(centralWidget);
+
+        verticalLayout_9->addLayout(horizontalLayout_3);
+
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setSpacing(6);
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        horizontalSpacer_2 = new QSpacerItem(250, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_2->addItem(horizontalSpacer_2);
+
+        PushStopSend = new QPushButton(groupBox);
         PushStopSend->setObjectName(QString::fromUtf8("PushStopSend"));
-        sizePolicy1.setHeightForWidth(PushStopSend->sizePolicy().hasHeightForWidth());
-        PushStopSend->setSizePolicy(sizePolicy1);
+        sizePolicy2.setHeightForWidth(PushStopSend->sizePolicy().hasHeightForWidth());
+        PushStopSend->setSizePolicy(sizePolicy2);
 
-        verticalLayout->addWidget(PushStopSend);
+        horizontalLayout_2->addWidget(PushStopSend);
+
+        push_SendLoop = new QPushButton(groupBox);
+        push_SendLoop->setObjectName(QString::fromUtf8("push_SendLoop"));
+        sizePolicy2.setHeightForWidth(push_SendLoop->sizePolicy().hasHeightForWidth());
+        push_SendLoop->setSizePolicy(sizePolicy2);
+        push_SendLoop->setMaximumSize(QSize(180, 16777215));
+
+        horizontalLayout_2->addWidget(push_SendLoop);
 
 
-        formLayout_3->setLayout(0, QFormLayout::FieldRole, verticalLayout);
+        verticalLayout_9->addLayout(horizontalLayout_2);
 
 
-        gridLayout->addLayout(formLayout_3, 0, 0, 1, 1);
+        gridLayout->addLayout(verticalLayout_9, 0, 0, 1, 1);
+
+
+        verticalLayout_10->addWidget(groupBox);
+
+        verticalLayout_10->setStretch(0, 7);
+        verticalLayout_10->setStretch(1, 3);
+
+        horizontalLayout_10->addLayout(verticalLayout_10);
+
+        horizontalLayout_10->setStretch(0, 2);
+        horizontalLayout_10->setStretch(1, 8);
+
+        gridLayout_2->addLayout(horizontalLayout_10, 0, 0, 1, 1);
 
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 686, 23));
+        menuBar->setGeometry(QRect(0, 0, 798, 23));
         menu = new QMenu(menuBar);
         menu->setObjectName(QString::fromUtf8("menu"));
         MainWindow->setMenuBar(menuBar);
@@ -347,6 +495,10 @@ public:
         MainWindow->setStatusBar(statusBar);
 
         menuBar->addAction(menu->menuAction());
+        menu->addAction(openComportAction);
+        menu->addAction(startRecordAction);
+        mainToolBar->addAction(openComportAction);
+        mainToolBar->addAction(startRecordAction);
 
         retranslateUi(MainWindow);
 
@@ -355,32 +507,33 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
-        formGroupBox->setTitle(QCoreApplication::translate("MainWindow", "\344\270\262\345\217\243\345\217\202\346\225\260\350\256\276\347\275\256", nullptr));
-        label->setText(QCoreApplication::translate("MainWindow", "\344\270\262\345\217\243\345\217\267", nullptr));
-        label_2->setText(QCoreApplication::translate("MainWindow", "\346\263\242\347\211\271\347\216\207", nullptr));
-        label_3->setText(QCoreApplication::translate("MainWindow", "\346\225\260\346\215\256\344\275\215", nullptr));
-        label_4->setText(QCoreApplication::translate("MainWindow", "\345\201\234\346\255\242\344\275\215", nullptr));
-        label_5->setText(QCoreApplication::translate("MainWindow", "\346\240\241\351\252\214", nullptr));
-        label_6->setText(QCoreApplication::translate("MainWindow", "\346\265\201\346\216\247", nullptr));
-        RadioAscii->setText(QCoreApplication::translate("MainWindow", "Ascii", nullptr));
-        radioHex->setText(QCoreApplication::translate("MainWindow", "Hex", nullptr));
-        checkBoxRecordTime->setText(QCoreApplication::translate("MainWindow", "\350\256\260\345\275\225\346\227\266\351\227\264\346\210\263", nullptr));
-        MessageFilter->setText(QCoreApplication::translate("MainWindow", "\347\255\233\351\200\211\350\256\276\347\275\256", nullptr));
-        label_7->setText(QCoreApplication::translate("MainWindow", "\345\217\221\351\200\201\350\256\241\346\225\260", nullptr));
-        label_SendCount->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
-        label_8->setText(QCoreApplication::translate("MainWindow", "\345\276\252\347\216\257\345\217\221\351\200\201\351\227\264\351\232\224(ms)", nullptr));
-        label_9->setText(QCoreApplication::translate("MainWindow", "\344\270\262\345\217\243\345\217\221\351\200\201\346\266\210\350\200\227\346\227\266\351\227\264", nullptr));
-        ButtonLink->setText(QCoreApplication::translate("MainWindow", "\346\211\223\345\274\200", nullptr));
-        ButtonStopSend->setText(QCoreApplication::translate("MainWindow", "\345\205\263\351\227\255", nullptr));
-        push_SendLoop->setText(QCoreApplication::translate("MainWindow", "\345\276\252\347\216\257\345\217\221\351\200\201", nullptr));
-        ButtonopenFile->setText(QCoreApplication::translate("MainWindow", "\346\211\223\345\274\200\346\226\207\344\273\266", nullptr));
-        label_11->setText(QCoreApplication::translate("MainWindow", "\346\216\245\346\224\266\346\230\276\347\244\272", nullptr));
-        label_10->setText(QCoreApplication::translate("MainWindow", "\345\217\221\351\200\201\350\276\223\345\205\245", nullptr));
-        radioSendHex->setText(QCoreApplication::translate("MainWindow", "Hex", nullptr));
-        ButtonSend->setText(QCoreApplication::translate("MainWindow", "\345\217\221\351\200\201", nullptr));
-        PushStopSend->setText(QCoreApplication::translate("MainWindow", "\345\201\234\346\255\242\345\217\221\351\200\201", nullptr));
-        menu->setTitle(QCoreApplication::translate("MainWindow", "\346\226\207\344\273\266", nullptr));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
+        openComportAction->setText(QApplication::translate("MainWindow", "\346\211\223\345\274\200\344\270\262\345\217\243", nullptr));
+        startRecordAction->setText(QApplication::translate("MainWindow", "\345\274\200\345\247\213\350\256\260\345\275\225", nullptr));
+        formGroupBox->setTitle(QApplication::translate("MainWindow", "\344\270\262\345\217\243\345\217\202\346\225\260\350\256\276\347\275\256", nullptr));
+        label->setText(QApplication::translate("MainWindow", "\344\270\262\345\217\243\345\217\267", nullptr));
+        label_2->setText(QApplication::translate("MainWindow", "\346\263\242\347\211\271\347\216\207", nullptr));
+        label_3->setText(QApplication::translate("MainWindow", "\346\225\260\346\215\256\344\275\215", nullptr));
+        label_4->setText(QApplication::translate("MainWindow", "\345\201\234\346\255\242\344\275\215", nullptr));
+        label_5->setText(QApplication::translate("MainWindow", "\346\240\241\351\252\214", nullptr));
+        label_6->setText(QApplication::translate("MainWindow", "\346\265\201\346\216\247", nullptr));
+        RadioAscii->setText(QApplication::translate("MainWindow", "Ascii", nullptr));
+        checkBoxRecordTime->setText(QApplication::translate("MainWindow", "\350\256\260\345\275\225\346\227\266\351\227\264\346\210\263", nullptr));
+        radioHex->setText(QApplication::translate("MainWindow", "Hex", nullptr));
+        MessageFilter->setText(QApplication::translate("MainWindow", "\347\255\233\351\200\211\350\256\276\347\275\256", nullptr));
+        label_7->setText(QApplication::translate("MainWindow", "\345\217\221\351\200\201\350\256\241\346\225\260", nullptr));
+        label_8->setText(QApplication::translate("MainWindow", "\345\276\252\347\216\257\345\217\221\351\200\201\351\227\264\351\232\224(ms)", nullptr));
+        label_SendCount->setText(QApplication::translate("MainWindow", "0", nullptr));
+        ButtonLink->setText(QApplication::translate("MainWindow", "\346\211\223\345\274\200", nullptr));
+        label_11->setText(QApplication::translate("MainWindow", "\346\216\245\346\224\266\346\230\276\347\244\272", nullptr));
+        pushButton_cleandiaplay->setText(QApplication::translate("MainWindow", "\346\270\205\351\231\244\346\230\276\347\244\272", nullptr));
+        groupBox->setTitle(QApplication::translate("MainWindow", "\345\217\221\351\200\201\345\214\272\345\237\237", nullptr));
+        label_10->setText(QApplication::translate("MainWindow", "\345\217\221\351\200\201\350\276\223\345\205\245", nullptr));
+        radioSendHex->setText(QApplication::translate("MainWindow", "Hex", nullptr));
+        ButtonSend->setText(QApplication::translate("MainWindow", "\345\217\221\351\200\201", nullptr));
+        PushStopSend->setText(QApplication::translate("MainWindow", "\345\201\234\346\255\242\345\276\252\347\216\257\345\217\221\351\200\201", nullptr));
+        push_SendLoop->setText(QApplication::translate("MainWindow", "\345\276\252\347\216\257\345\217\221\351\200\201", nullptr));
+        menu->setTitle(QApplication::translate("MainWindow", "\346\226\207\344\273\266", nullptr));
     } // retranslateUi
 
 };
