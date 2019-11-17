@@ -107,32 +107,17 @@ bool MainWindow::closeComPort()
 	connect(ui->ButtonLink, &QPushButton::clicked, this, &MainWindow::openComPort);
 	return true;
 }
-bool MainWindow::ComSendDatathread( )
+bool MainWindow::comSendDatathread()
 {
-    QSerialPort SendLoop;
-    getComparam(&SendLoop);
-    if(!SendLoop.open(QIODevice::ReadWrite))
-    {
-        return false;
 
-    }
-    std::string sendstr;
-    if(SendLoop.isOpen())
+    while(m_sendLoopFlag)
     {
-        while(m_sendLoopFlag)
-        {
 
-            if (SendLoop.isWritable())
-            {
-                 int i = SendLoop.write((const char*)m_sendCmd, 9);
-                 SendLoop.waitForBytesWritten(25);
-                 m_sendPackSum++;
-                 emitpackSum(m_sendPackSum);
-                 std::this_thread::sleep_for(std::chrono::milliseconds(m_sendTimeGap));
-            }
-        }
+		comPortSendData();
+		/*m_sendPackSum++;
+		emitpackSum(m_sendPackSum);*/
+		std::this_thread::sleep_for(std::chrono::milliseconds(m_sendTimeGap));
     }
-    SendLoop.close();
     return true;
 
 }
@@ -165,6 +150,7 @@ bool MainWindow::comPortSendData()
 
         bool completekey;
         m_nativeClassComport->WriteData((const char*)(SendTextstd.c_str()), SendTextstd.length(),completekey,0);
+		++m_sendPackSum;
         ui->label_SendCount->setText(QString::number(m_sendPackSum));
         ContextDisPlay(SendText,1,m_sendHexMode);
     }
@@ -205,10 +191,10 @@ bool MainWindow::changSendStrType(bool mode)
 }
 bool MainWindow::scrollLast()
 {
-     QTextCursor cursor = ui->textbrowse_cmddisplay->textCursor();
-      cursor.movePosition(QTextCursor::End);
-      ui->textbrowse_cmddisplay->setTextCursor(cursor);
-      return true;
+	QTextCursor cursor;// = ui->textbrowse_cmddisplay->textCursor();
+	cursor.movePosition(QTextCursor::End);
+	ui->textbrowse_cmddisplay->setTextCursor(cursor);
+	return true;
 }
 bool MainWindow::openFilterSetWindow()
 {
@@ -408,7 +394,7 @@ bool MainWindow::SendLoop()
          {
              m_qcomPort->close();
          }
-         m_sendthread = new std::thread(&MainWindow::ComSendDatathread,this);
+         m_sendthread = new std::thread(&MainWindow::comSendDatathread,this);
          ui->push_SendLoop->setEnabled(false);
      }
      else
@@ -418,7 +404,7 @@ bool MainWindow::SendLoop()
          {
             m_qcomPort->close();
          }
-         m_sendthread = new std::thread(&MainWindow::ComSendDatathread,this);
+         m_sendthread = new std::thread(&MainWindow::comSendDatathread,this);
          ui->push_SendLoop->setEnabled(false);
 
      }
@@ -505,7 +491,7 @@ bool MainWindow::StrToASCIIStr(std::string & asciistr)
 	}
 	return true;
 }
-bool MainWindow::StrToHexstr(std::string & asciistr)
+bool MainWindow::StrToHexstr(std::string &asciistr)
 {
 	using BYTE = unsigned int;
 	std::vector<BYTE> bytearry;

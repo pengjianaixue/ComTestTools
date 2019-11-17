@@ -83,7 +83,7 @@ signals:
      void emitRecviData(QString recvidata);
 
 private:
-    bool ComSendDatathread();
+    bool comSendDatathread();
 	bool GetVisibleComPort();
 	bool ConnectSlot();
     bool  SendLoop();
