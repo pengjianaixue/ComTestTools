@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow),
@@ -29,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_qcomPort = new QSerialPort;
     m_sendNum = 0.001;
     m_filterSetDialog = new MessageFilter(this);
+	m_logFileSavePathGetDialog = new LogFilePathSelection(this);
+	m_logFileSavePathGetDialog->hide();
     m_filterSetDialog->hide();
     ui->setupUi(this);
     Comparaminit();
@@ -41,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         m_sendHexMode = true;
     }
-    m_nativeClassComport =  new CSerialPort;
+    m_nativeClassComport =  new CSerialPort(CSerialPort::COMTYPE::Asynchronous_mode);
     GetComparamSetNative();
     ui->textbrowse_cmddisplay->setReadOnly(true);
     m_recviThreadRunFlag = true;
@@ -71,6 +72,7 @@ MainWindow::~MainWindow()
 
         }
     }
+	delete m_logFileSavePathGetDialog;
     delete m_nativeClassComport;
     delete m_filterSetDialog;
     delete m_toolButton;
@@ -84,11 +86,8 @@ bool MainWindow::openComPort()
                                              m_nativeComportParam.ComCheckway))
     {
 
-                QMessageBox::StandardButton reply;
-                 reply = QMessageBox::information(this, tr("串口打开失败"),tr("串口打开失败"),reply);
-                 if (reply == QMessageBox::Ok)
-                    return false;
-                return false;
+		QMessageBox::StandardButton reply = QMessageBox::information(this, tr("串口打开失败"), tr("串口打开失败"));
+		return false;
 
     }
 	ui->ButtonLink->setText(tr("关闭串口"));
@@ -252,13 +251,52 @@ void MainWindow::clearDisPlayContent()
 {
     ui->textbrowse_cmddisplay->clear();
 }
+void MainWindow::startRecordLogToFile()
+{
+	disconnect(this->ui->startRecordAction, &QAction::triggered, this, &MainWindow::startRecordLogToFile);
+	if (m_logFileSavePath.isEmpty() || !m_logPathIsVaild)
+	{
+		m_logFileSavePathGetDialog->show();
+		while (!m_logFileSavePathGetDialog->isHidden())
+		{
+			QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+		}
+		m_logFileSavePath =  m_logFileSavePathGetDialog->getPath();
+	}
+	if (m_recordLogFileThread == nullptr || !m_recordRunFlag )
+	{
+		stopRecordLogToFile();
+		m_recordRunFlag = true;
+		m_recordLogFileThread = new std::thread(&MainWindow::recordLogToFile,this);
+		qDebug() << "record thread is create";
+	}
+	this->ui->startRecordAction->setIcon(QIcon(":/rc/icon/resource/record-on.png"));
+	connect(this->ui->startRecordAction, &QAction::triggered, this, &MainWindow::stopRecordLogToFile);
+
+}
+void MainWindow::stopRecordLogToFile()
+{
+	m_recordRunFlag = false;
+	if (m_recordLogFileThread)
+	{
+		if (m_recordLogFileThread->joinable())
+		{
+			m_recordLogFileThread->join();
+			qDebug() << "record thread is join";
+		}
+		delete m_recordLogFileThread;
+		m_recordLogFileThread = nullptr;
+	}
+	this->ui->startRecordAction->setIcon(QIcon(":/rc/icon/resource/record-off.png"));
+	connect(this->ui->startRecordAction, &QAction::triggered, this, &MainWindow::startRecordLogToFile);
+}
 bool MainWindow::GetComparaminit()
 {
 	
 	GetVisibleComPort();
-    for(int  i = 0 ;i< m_ComportVisible.length();++i)
+    for(int  i = 0 ;i< m_comportVisible.length();++i)
     {
-        ui->COMPort->addItem(m_ComportVisible[i]);
+        ui->COMPort->addItem(m_comportVisible[i]);
     }
     for(int  i= 0 ; i<=7;++i)
     {
@@ -381,6 +419,10 @@ bool MainWindow::ConnectSlot()
     connect(this->m_filterSetDialog,&MessageFilter::SetFilterOption,this,&MainWindow::setFilterParam);
     connect(this->ui->checkBoxRecordTime,&QRadioButton::toggled,this,&MainWindow::setTimeStamp);
     connect(this, &MainWindow::emitRecviData,this, &MainWindow::disPlayRecvData);
+	connect(this->ui->startRecordAction, &QAction::triggered, this, &MainWindow::startRecordLogToFile);
+	connect(this->ui->textbrowse_cmddisplay, &QTextBrowser::textChanged, this, [&] {m_textIsChanged = true; });
+	connect(this, &MainWindow::emitOpenLogFileFail, this, [&] {QMessageBox::critical(this, "log file error", "create log file error"); this->ui->startRecordAction->setIcon(QIcon(":/rc/icon/resource/record-off.png"));
+	connect(this->ui->startRecordAction, &QAction::triggered, this, &MainWindow::startRecordLogToFile); disconnect(this->ui->startRecordAction, &QAction::triggered, this, &MainWindow::stopRecordLogToFile); });
     return true;
 }
 
@@ -465,7 +507,33 @@ bool MainWindow::ContextDisPlay(const QString &Discontext,unsigned int DisplayDi
         DisText+=" (ASCII)";
     }
     ui->textbrowse_cmddisplay->append(DisText);
+	return true;
 
+}
+void MainWindow::recordLogToFile()
+{
+	QFile logFile(m_logFileSavePath);
+	logFile.open(QIODevice::Truncate | QIODevice::WriteOnly | QIODevice::Text);
+	if (!logFile.isOpen())
+	{
+		emit emitOpenLogFileFail();
+		m_recordRunFlag = false;
+		m_logPathIsVaild = false;
+		return;
+	}
+	m_logPathIsVaild = true;
+	while (m_recordRunFlag)
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(5));
+		if (m_textIsChanged)
+		{
+			logFile.write(this->ui->textbrowse_cmddisplay->toPlainText().toStdString().c_str());
+			logFile.flush();
+			m_textIsChanged = false;
+		}
+	}
+	logFile.flush();
+	logFile.close();
 }
 unsigned int   MainWindow::CalculateSumCheck(  byte *ProtocolStore,   uint32_t ProtocolHead)
 {
@@ -561,7 +629,7 @@ bool MainWindow::GetVisibleComPort()
 	{
 		QString ComportInfo;
 		ComportInfo =   info.portName();
-		m_ComportVisible.append(ComportInfo);
+		m_comportVisible.append(ComportInfo);
 	}
 	return true;
 	

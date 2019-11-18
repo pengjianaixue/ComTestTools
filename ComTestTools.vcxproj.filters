@@ -43,6 +43,9 @@
     <ClCompile Include="messagefilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="logfilepathselection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComDevice.hpp">
@@ -60,6 +63,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="messagefilter.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="logfilepathselection.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
@@ -81,5 +87,10 @@
     <Image Include="resource\serial-port-on.png">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="logfilepathselection.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>

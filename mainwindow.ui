@@ -186,6 +186,9 @@
                   <property name="text">
                    <string>筛选设置</string>
                   </property>
+                  <property name="flat">
+                   <bool>false</bool>
+                  </property>
                  </widget>
                 </item>
                </layout>
@@ -289,6 +292,9 @@
             <iconset resource="rc.qrc">
              <normaloff>:/rc/icon/resource/serial-port-on.png</normaloff>:/rc/icon/resource/serial-port-on.png</iconset>
            </property>
+           <property name="flat">
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
         </layout>
@@ -334,6 +340,9 @@
               <property name="icon">
                <iconset resource="rc.qrc">
                 <normaloff>:/rc/icon/resource/clean.png</normaloff>:/rc/icon/resource/clean.png</iconset>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -415,6 +424,9 @@
                  <property name="autoRepeat">
                   <bool>true</bool>
                  </property>
+                 <property name="flat">
+                  <bool>false</bool>
+                 </property>
                 </widget>
                </item>
               </layout>
@@ -445,6 +457,9 @@
                  <property name="text">
                   <string>停止循环发送</string>
                  </property>
+                 <property name="flat">
+                  <bool>false</bool>
+                 </property>
                 </widget>
                </item>
                <item>
@@ -463,6 +478,9 @@
                  </property>
                  <property name="text">
                   <string>循环发送</string>
+                 </property>
+                 <property name="flat">
+                  <bool>false</bool>
                  </property>
                 </widget>
                </item>
@@ -485,17 +503,23 @@
      <x>0</x>
      <y>0</y>
      <width>798</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
     <property name="title">
      <string>文件</string>
     </property>
-    <addaction name="openComportAction"/>
     <addaction name="startRecordAction"/>
    </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>帮助</string>
+    </property>
+    <addaction name="about_action"/>
+   </widget>
    <addaction name="menu"/>
+   <addaction name="menu_2"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -504,29 +528,21 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="openComportAction"/>
    <addaction name="startRecordAction"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="openComportAction">
-   <property name="icon">
-    <iconset resource="rc.qrc">
-     <normaloff>:/rc/icon/resource/serial-port-on.png</normaloff>:/rc/icon/resource/serial-port-on.png</iconset>
-   </property>
-   <property name="text">
-    <string>打开串口</string>
-   </property>
-  </action>
   <action name="startRecordAction">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="icon">
     <iconset resource="rc.qrc">
      <normaloff>:/rc/icon/resource/record-off.png</normaloff>:/rc/icon/resource/record-off.png</iconset>
    </property>
    <property name="text">
     <string>开始记录</string>
+   </property>
+  </action>
+  <action name="about_action">
+   <property name="text">
+    <string>关于</string>
    </property>
   </action>
  </widget>
