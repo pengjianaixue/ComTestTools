@@ -601,25 +601,6 @@ std::string MainWindow::HexToHexStr(const char *hex, int length)
 
 }
 
-bool MainWindow::SetSendNum(byte *cmd, int nIndex)
-{
-    byte tem[1]={0};
-    if((cmd[nIndex]&0x0f)<0x09)
-    {
-          cmd[nIndex] += 0x01;
-    }
-    else
-    {
-        cmd[nIndex] = cmd[nIndex]&0xf0;//
-        if(((cmd[nIndex]>>4)&0xf0)<0x09)
-        {
-            tem[0] = (cmd[nIndex]>>4)+0x01;
-            cmd[nIndex] = (tem[0]<<4);
-        }
-    }
-
-    return true;
-}
 QByteArray MainWindow::hexStringtoByteArray(QString hex)
 {
         QByteArray ret;

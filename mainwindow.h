@@ -101,7 +101,6 @@ public :
 	template <typename T> static bool freemem(T *mem);
     static unsigned long  BCDtoDec(const byte *bcd, int length);
     static std::string    HexToHexStr(const char *hex,int length);
-    static  bool SetSendNum(byte *cmd , int nIndex);
     QByteArray hexStringtoByteArray(QString hex);
 private:
     Ui::MainWindow *ui;
