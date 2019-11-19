@@ -21,7 +21,6 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QRadioButton>
 #include <QtWidgets/QVBoxLayout>
 
 QT_BEGIN_NAMESPACE
@@ -32,10 +31,8 @@ public:
     QFormLayout *formLayout;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *horizontalLayout_3;
-    QLabel *label_6;
     QCheckBox *checkBoxDisOnce;
-    QLabel *label_3;
-    QRadioButton *radiohexFilter;
+    QCheckBox *checkBoxhexFilter;
     QHBoxLayout *horizontalLayout;
     QLabel *label;
     QLineEdit *EditMessagehead;
@@ -54,32 +51,22 @@ public:
     {
         if (MessageFilter->objectName().isEmpty())
             MessageFilter->setObjectName(QStringLiteral("MessageFilter"));
-        MessageFilter->resize(445, 125);
+        MessageFilter->resize(445, 126);
         formLayout = new QFormLayout(MessageFilter);
         formLayout->setObjectName(QStringLiteral("formLayout"));
         verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         horizontalLayout_3 = new QHBoxLayout();
         horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
-        label_6 = new QLabel(MessageFilter);
-        label_6->setObjectName(QStringLiteral("label_6"));
-
-        horizontalLayout_3->addWidget(label_6);
-
         checkBoxDisOnce = new QCheckBox(MessageFilter);
         checkBoxDisOnce->setObjectName(QStringLiteral("checkBoxDisOnce"));
 
         horizontalLayout_3->addWidget(checkBoxDisOnce);
 
-        label_3 = new QLabel(MessageFilter);
-        label_3->setObjectName(QStringLiteral("label_3"));
+        checkBoxhexFilter = new QCheckBox(MessageFilter);
+        checkBoxhexFilter->setObjectName(QStringLiteral("checkBoxhexFilter"));
 
-        horizontalLayout_3->addWidget(label_3);
-
-        radiohexFilter = new QRadioButton(MessageFilter);
-        radiohexFilter->setObjectName(QStringLiteral("radiohexFilter"));
-
-        horizontalLayout_3->addWidget(radiohexFilter);
+        horizontalLayout_3->addWidget(checkBoxhexFilter);
 
 
         verticalLayout->addLayout(horizontalLayout_3);
@@ -161,10 +148,8 @@ public:
     void retranslateUi(QDialog *MessageFilter)
     {
         MessageFilter->setWindowTitle(QApplication::translate("MessageFilter", "\347\255\233\351\200\211\350\256\276\347\275\256", Q_NULLPTR));
-        label_6->setText(QApplication::translate("MessageFilter", "\351\207\215\345\244\215\346\266\210\346\201\257\345\217\252\346\230\276\347\244\272\344\270\200\346\254\241", Q_NULLPTR));
-        checkBoxDisOnce->setText(QApplication::translate("MessageFilter", "CheckBox", Q_NULLPTR));
-        label_3->setText(QApplication::translate("MessageFilter", "\345\215\201\345\205\255\350\277\233\345\210\266\347\255\233\351\200\211", Q_NULLPTR));
-        radiohexFilter->setText(QApplication::translate("MessageFilter", "RadioButton", Q_NULLPTR));
+        checkBoxDisOnce->setText(QApplication::translate("MessageFilter", "\351\207\215\345\244\215\346\266\210\346\201\257\345\217\252\346\230\276\347\244\272\344\270\200\346\254\241", Q_NULLPTR));
+        checkBoxhexFilter->setText(QApplication::translate("MessageFilter", "\345\215\201\345\205\255\350\277\233\345\210\266\347\255\233\351\200\211", Q_NULLPTR));
         label->setText(QApplication::translate("MessageFilter", "\346\230\276\347\244\272\346\266\210\346\201\257\345\244\264", Q_NULLPTR));
         label_4->setText(QApplication::translate("MessageFilter", "\344\270\215\346\230\276\347\244\272\346\266\210\346\201\257\345\244\264", Q_NULLPTR));
         label_2->setText(QApplication::translate("MessageFilter", "\346\230\276\347\244\272\346\266\210\346\201\257\345\260\276", Q_NULLPTR));

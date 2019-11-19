@@ -16,7 +16,7 @@ MessageFilter::~MessageFilter()
 void MessageFilter::save()
 {
     bool repeatIsOneDisplay  = ui->checkBoxDisOnce->isChecked();
-    bool  IsHex = ui->radiohexFilter->isChecked();
+    bool  IsHex = ui->checkBoxhexFilter->isChecked();
     QString DisPlayHead = ui->EditMessagehead->text();
     QString UnDisplayHead = ui->EditUnDisplayHead->text();
     QString  DisPlayTail = ui->EditMessageTail->text();

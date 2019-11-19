@@ -8,6 +8,7 @@
 #include <process.h>
 #include <ioapiset.h>
 #include <deque>
+#include <cstring>
 //C++ 11支持
 //#if _MSC_VER >=1700
 //#include <thread>
@@ -100,7 +101,7 @@ public:
 
     /** 初始化串口函数
     *
-    *  @param:  UINT portNo 串口编号,默认值为1,即COM1,注意,尽量不要大于9
+    *  @param:  const char *comPort 串口编号, 如COM1
     *  @param:  UINT baud   波特率,默认为9600
     *  @param:  char parity 是否进行奇偶校验,'Y'表示需要奇偶校验,'N'表示不需要奇偶校验
     *  @param:  UINT databits 数据位的个数,默认值为8个数据位
@@ -112,7 +113,7 @@ public:
     *           /n本串口类析构时会自动关闭串口,无需额外执行关闭串口
     *  @see:
     */
-    inline bool InitPort(UINT  portNo = 1, UINT  baud = CBR_9600,  UINT  databits = 8, UINT  stopsbits = 1, UINT parity = 0, DWORD dwCommEvents = EV_RXCHAR);
+    inline bool InitPort(const char *comPort = "", UINT  baud = CBR_9600,  UINT  databits = 8, UINT  stopsbits = 1, UINT parity = 0, DWORD dwCommEvents = EV_RXCHAR);
     /** 串口初始化函数
     *
     *  本函数提供直接根据DCB参数设置串口参数
@@ -122,7 +123,7 @@ public:
     *  @note:   本函数提供用户自定义地串口初始化参数
     *  @see:
     */
-     inline bool InitPort(UINT  portNo, const LPDCB& plDCB);
+     inline bool InitPort(const char *comPort, const LPDCB& plDCB);
 
     /** 开启监听线程
     *
@@ -189,7 +190,7 @@ public:
     *  @note:
     *  @see:
     */
-     inline bool  ReadComPort(char * RecviData, DWORD &recvlength, int(*Completecallbackfun)(int param, void *arg)=NULL, int CallBackfunparam = 0, void * arg=NULL);
+     inline bool  ReadComPort(char * RecviData, DWORD &recvlength, int(*Completecallbackfun)(int param, void *arg) = NULL, int CallBackfunparam = 0, void *arg = NULL);
      /** 读取串口接收缓冲区中指定长度数据
      *
      *
@@ -235,7 +236,7 @@ private:
     *  @note:
     *  @see:
     */
-    inline bool openPort(UINT  portNo);
+    inline bool openPort(const char *comPortName);
 
     /** 串口监听线程
     *
@@ -275,6 +276,7 @@ private:
     inline static UINT WINAPI GetQueuedCompletionStatusThread(LPVOID lpparam);
     inline BOOL OpenGetQueuedCompletionStatusThread();
     inline bool CloseGetQueuedCompletionStatusThread();
+	inline bool JudegmentComPortNumIsMoreThanTen(const char *comPortName);
 
 private:
 
@@ -335,7 +337,7 @@ inline CSerialPort::~CSerialPort(void)
     }
     DeleteCriticalSection(&m_csCommunicationSync);
 }
-bool CSerialPort::InitPort(UINT portNo /*= 1*/, UINT baud /*= CBR_9600*/,
+bool CSerialPort::InitPort(const char *comPort /*= 1*/, UINT baud /*= CBR_9600*/,
     UINT databits /*= 8*/, UINT stopsbits /*= 1*/, UINT parity /*= 0*/, DWORD dwCommEvents /*= EV_RXCHAR*/)
 {
 
@@ -344,7 +346,7 @@ bool CSerialPort::InitPort(UINT portNo /*= 1*/, UINT baud /*= CBR_9600*/,
     sprintf_s(szDCBparam, "baud=%d parity=%c data=%d stop=%d", baud, parity, databits, stopsbits);
     //baud = 1200 parity = N data = 8 stop = 1
     /** 打开指定串口,该函数内部已经有临界区保护,上面请不要加保护 */
-    if (!openPort(portNo))
+    if (!openPort(comPort))
     {
         return false;
     }
@@ -427,10 +429,10 @@ bool CSerialPort::InitPort(UINT portNo /*= 1*/, UINT baud /*= CBR_9600*/,
     return bIsSuccess == TRUE;
 }
 
-bool CSerialPort::InitPort(UINT portNo, const LPDCB& plDCB)
+bool CSerialPort::InitPort(const char *comPort, const LPDCB& plDCB)
 {
     /** 打开指定串口,该函数内部已经有临界区保护,上面请不要加保护 */
-    if (!openPort(portNo))
+    if (!openPort(comPort))
     {
         return false;
     }
@@ -475,18 +477,23 @@ inline bool CSerialPort::IsOpen()
     return false;
 }
 
-bool CSerialPort::openPort(UINT portNo)
+bool CSerialPort::openPort(const char *comPortName)
 {
     /** 进入临界段 */
+	char OpenComPortName[64] = { "\\\\.\\" };
     EnterCriticalSection(&m_csCommunicationSync);
-
-    /** 把串口的编号转换为设备名 */
-    char szPort[50];
-    sprintf(szPort, "COM%d", portNo);
+	if (JudegmentComPortNumIsMoreThanTen(comPortName))
+	{
+		strcat_s(OpenComPortName, 64, comPortName);
+	}
+	else
+	{
+		strcpy_s(OpenComPortName, 64, comPortName);
+	}
     if (Asynchronous_mode == m_thiscomtype)
     {
         /** 打开指定的串口 */
-        m_hComm = CreateFileA(szPort,     /** 设备名,COM1,COM2等 */
+        m_hComm = CreateFileA(OpenComPortName,     /** 设备名,COM1,COM2等 */
             GENERIC_READ | GENERIC_WRITE, /** 访问模式,可同时读写 */
             0,                            /** 共享模式,0表示不共享 */
             NULL,
@@ -517,7 +524,7 @@ bool CSerialPort::openPort(UINT portNo)
     else if (Synchronous_mode == m_thiscomtype)
     {
         /** 打开指定的串口 */
-        m_hComm = CreateFileA(szPort,	  /** 设备名,COM1,COM2等 */
+        m_hComm = CreateFileA(OpenComPortName,	  /** 设备名,COM1,COM2等 */
             GENERIC_READ | GENERIC_WRITE, /** 访问模式,可同时读写 */
             0,                            /** 共享模式,0表示不共享 */
             NULL,                         /** 安全性设置,一般使用NULL */
@@ -593,7 +600,7 @@ inline bool CSerialPort::OpenClearupTread()
     return true;
 }
 
-inline  unsigned  int  CSerialPort::Clearupfun(LPVOID lpparam)
+inline unsigned int CSerialPort::Clearupfun(LPVOID lpparam)
 {
     CSerialPort *thisclass =   static_cast<CSerialPort*>(lpparam);
     while (thisclass->m_ClearupFlags)
@@ -609,8 +616,6 @@ inline  unsigned  int  CSerialPort::Clearupfun(LPVOID lpparam)
                 delete clearget;
             }
             thisclass->m_usedoverlappedlist.pop_front();
-
-
         }
         LeaveCriticalSection(&thisclass->m_csCommunicationSync);
     }
@@ -620,7 +625,7 @@ inline  unsigned  int  CSerialPort::Clearupfun(LPVOID lpparam)
 
 UINT CSerialPort::GetBytesInCOM()
 {
-    DWORD dwError = 0;  /** 错误码 */
+    DWORD dwError = 0;  /** error code  */
     COMSTAT  comstat;   /** COMSTAT结构体,记录通信设备的状态信息 */
     memset(&comstat, 0, sizeof(COMSTAT));
     UINT BytesInQue = 0;
@@ -665,7 +670,6 @@ UINT WINAPI CSerialPort::ListenThread(void* pParam)
     //	} while (--BytesInQue);
     //	//delete[] cRecvestring;
     //}
-
     return 0;
 }
 
@@ -760,6 +764,22 @@ inline bool CSerialPort::CloseGetQueuedCompletionStatusThread()
     }
     CloseHandle(m_CompletionPort);
     return true;
+}
+inline bool CSerialPort::JudegmentComPortNumIsMoreThanTen(const char *comPortName)
+{
+	int numcounter = 0;
+	for (size_t i = 0; i<strlen(comPortName); i++)
+	{
+		if (comPortName[i] <='9'&& comPortName[i] >='0')
+		{
+			++numcounter;
+			if (numcounter>1)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
 }
 bool CSerialPort::ReadComPort(char *RecviData, DWORD &recvlength, int(*Completecallbackfun)(int param, void *arg),int CallBackfunparam, void *arg)
 {

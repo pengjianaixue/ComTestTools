@@ -42,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         m_sendHexMode = true;
     }
-    m_nativeClassComport =  new CSerialPort(CSerialPort::COMTYPE::Asynchronous_mode);
+    m_nativeClassComport =  new CSerialPort();
     GetComparamSetNative();
     ui->textbrowse_cmddisplay->setReadOnly(true);
     m_recviThreadRunFlag = true;
@@ -81,7 +81,16 @@ MainWindow::~MainWindow()
 bool MainWindow::openComPort()
 {
     GetComparamSetNative();
-    if(!m_nativeClassComport->InitPort(m_nativeComportParam.Comname.right(1).toInt(),m_nativeComportParam.ComBaudRate,
+	int comportNum = 0;
+	// Qt RegExp
+	QRegExp comportNumReg("\\d+");
+	comportNumReg.indexIn(m_nativeComportParam.Comname);
+	comportNum = comportNumReg.capturedTexts()[comportNumReg.captureCount()].toInt();
+	//if (comportNum>9)
+	//{
+	//	m_nativeComportParam.Comname
+	//}
+    if(!m_nativeClassComport->InitPort(m_nativeComportParam.Comname.toUtf8().constData(),m_nativeComportParam.ComBaudRate,
                                              m_nativeComportParam.ComDataBit,m_nativeComportParam.ComStopBit,
                                              m_nativeComportParam.ComCheckway))
     {
@@ -123,10 +132,10 @@ bool MainWindow::comSendDatathread()
 bool MainWindow::comPortSendData()
 {
 
-    std::string  SendTextstd;
     if( m_nativeClassComport ->IsOpen())
     {
         QString  SendText  = ui->SendTextEdit->toPlainText();
+		SendText = SendText.replace("\\r", "\r").replace("\\n","\n");
         if( m_sendHexMode )
         {
             SendText = SendText.trimmed();
@@ -140,18 +149,12 @@ bool MainWindow::comPortSendData()
                 }
             }
             QByteArray SendTextArray =  hexStringtoByteArray(SendText);
-            SendTextstd =  SendTextArray.toStdString();
         }
-        else
-         {
-            SendTextstd = SendText.toStdString();
-        }
-
         bool completekey;
-        m_nativeClassComport->WriteData((const char*)(SendTextstd.c_str()), SendTextstd.length(),completekey,0);
+        m_nativeClassComport->WriteData((const char*)(SendText.toUtf8().constData()), SendText.length(),completekey,0);
 		++m_sendPackSum;
         ui->label_SendCount->setText(QString::number(m_sendPackSum));
-        ContextDisPlay(SendText,1,m_sendHexMode);
+        ContextDisPlay(SendText.replace("\r","\\r").replace("\n","\\n"),1,m_sendHexMode);
     }
     else
     {
@@ -228,9 +231,9 @@ void MainWindow::recviData(MainWindow* pwin)
         while(m_recviThreadRunFlag)
         {
 			char recviDataArray[2048] = { 0 };
-            if(m_nativeClassComport->IsOpen()&&m_nativeClassComport->GetBytesInCOM()>0)
+            if(m_nativeClassComport->IsOpen() && m_nativeClassComport->GetBytesInCOM()>0)
             {
-                    unsigned long  nReadlength = 64;
+                    unsigned long  nReadlength = 512;
                     memset(recviDataArray,0,2048);
                     if(m_nativeClassComport->ReadComPort(recviDataArray,nReadlength))
                     {
@@ -256,12 +259,7 @@ void MainWindow::startRecordLogToFile()
 	disconnect(this->ui->startRecordAction, &QAction::triggered, this, &MainWindow::startRecordLogToFile);
 	if (m_logFileSavePath.isEmpty() || !m_logPathIsVaild)
 	{
-		m_logFileSavePathGetDialog->show();
-		while (!m_logFileSavePathGetDialog->isHidden())
-		{
-			QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
-		}
-		m_logFileSavePath =  m_logFileSavePathGetDialog->getPath();
+		openLogSavePathSetForm();
 	}
 	if (m_recordLogFileThread == nullptr || !m_recordRunFlag )
 	{
@@ -298,7 +296,7 @@ bool MainWindow::GetComparaminit()
     {
         ui->COMPort->addItem(m_comportVisible[i]);
     }
-    for(int  i= 0 ; i<=7;++i)
+    for(int  i= 0 ; i<=8;++i)
     {
         ui->BuadRate->addItem(BAUDTARE[i]);
     }
@@ -420,7 +418,7 @@ bool MainWindow::ConnectSlot()
     connect(this->ui->checkBoxRecordTime,&QRadioButton::toggled,this,&MainWindow::setTimeStamp);
     connect(this, &MainWindow::emitRecviData,this, &MainWindow::disPlayRecvData);
 	connect(this->ui->startRecordAction, &QAction::triggered, this, &MainWindow::startRecordLogToFile);
-	connect(this->ui->textbrowse_cmddisplay, &QTextBrowser::textChanged, this, [&] {m_textIsChanged = true; });
+	connect(this->ui->setLogSavePath_action, &QAction::triggered, this, &MainWindow::openLogSavePathSetForm);
 	connect(this, &MainWindow::emitOpenLogFileFail, this, [&] {QMessageBox::critical(this, "log file error", "create log file error"); this->ui->startRecordAction->setIcon(QIcon(":/rc/icon/resource/record-off.png"));
 	connect(this->ui->startRecordAction, &QAction::triggered, this, &MainWindow::startRecordLogToFile); disconnect(this->ui->startRecordAction, &QAction::triggered, this, &MainWindow::stopRecordLogToFile); });
     return true;
@@ -506,6 +504,8 @@ bool MainWindow::ContextDisPlay(const QString &Discontext,unsigned int DisplayDi
     {
         DisText+=" (ASCII)";
     }
+	m_textIsChanged = true;
+	m_recordContent = DisText + "\n";
     ui->textbrowse_cmddisplay->append(DisText);
 	return true;
 
@@ -527,13 +527,23 @@ void MainWindow::recordLogToFile()
 		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		if (m_textIsChanged)
 		{
-			logFile.write(this->ui->textbrowse_cmddisplay->toPlainText().toStdString().c_str());
+			logFile.write(m_recordContent.toUtf8().constData());
 			logFile.flush();
 			m_textIsChanged = false;
+			m_recordContent.clear();
 		}
 	}
 	logFile.flush();
 	logFile.close();
+}
+void MainWindow::openLogSavePathSetForm()
+{
+	m_logFileSavePathGetDialog->show();
+	while (!m_logFileSavePathGetDialog->isHidden())
+	{
+		QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+	}
+	m_logFileSavePath = m_logFileSavePathGetDialog->getPath();
 }
 unsigned int   MainWindow::CalculateSumCheck(  byte *ProtocolStore,   uint32_t ProtocolHead)
 {

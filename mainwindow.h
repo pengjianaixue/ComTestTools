@@ -24,7 +24,7 @@
 #include "ComDevice.hpp"
 #include "logfilepathselection.h"
 #include "ui_mainwindow.h"
-const QString   BAUDTARE[]={"300","600","1200","2400","4800","9600","19200","38400"};
+const QString   BAUDTARE[]={"300","600","1200","2400","4800","9600","19200","38400","115200"};
 const QString   DATABIT[]={"5","6","7","8"};
 const QString   CHECKWAY[]={"NODE","EVEN","ODD","MARK","SPACE"};
 const QString   STOPBIT[]={"1","1.5","2"};
@@ -92,6 +92,7 @@ private:
 	bool SendStop();
 	bool ContextDisPlay(const QString &Discontext, unsigned int DisplayDirct, bool IsHex);
 	void recordLogToFile();
+	void openLogSavePathSetForm();
 	
 public :
 	static  bool StrToASCIIStr(std::string & asciistr);
@@ -139,6 +140,7 @@ private:
     QString					 m_strUnDisplayHead;
     QString					 m_strDisPlayTail;
     QString					 m_strUnDisPlayTail;
+	QString					 m_recordContent;
 	bool					 m_bisAddtimeTimestamp		= { false };
 	//本地串口类
 	CSerialPort				 *m_nativeClassComport		= { nullptr };

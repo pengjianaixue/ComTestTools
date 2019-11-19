@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>445</width>
-    <height>125</height>
+    <height>126</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,30 +19,16 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
-        <widget class="QLabel" name="label_6">
+        <widget class="QCheckBox" name="checkBoxDisOnce">
          <property name="text">
           <string>重复消息只显示一次</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="checkBoxDisOnce">
-         <property name="text">
-          <string>CheckBox</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_3">
+        <widget class="QCheckBox" name="checkBoxhexFilter">
          <property name="text">
           <string>十六进制筛选</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="radiohexFilter">
-         <property name="text">
-          <string>RadioButton</string>
          </property>
         </widget>
        </item>

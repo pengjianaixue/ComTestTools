@@ -41,6 +41,7 @@ class Ui_MainWindow
 public:
     QAction *startRecordAction;
     QAction *about_action;
+    QAction *setLogSavePath_action;
     QWidget *centralWidget;
     QGridLayout *gridLayout_2;
     QHBoxLayout *horizontalLayout_10;
@@ -117,6 +118,8 @@ public:
         startRecordAction->setIcon(icon);
         about_action = new QAction(MainWindow);
         about_action->setObjectName(QStringLiteral("about_action"));
+        setLogSavePath_action = new QAction(MainWindow);
+        setLogSavePath_action->setObjectName(QStringLiteral("setLogSavePath_action"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout_2 = new QGridLayout(centralWidget);
@@ -238,6 +241,7 @@ public:
         sizePolicy1.setHeightForWidth(RadioAscii->sizePolicy().hasHeightForWidth());
         RadioAscii->setSizePolicy(sizePolicy1);
         RadioAscii->setMinimumSize(QSize(96, 0));
+        RadioAscii->setChecked(true);
 
         verticalLayout_5->addWidget(RadioAscii);
 
@@ -505,6 +509,7 @@ public:
         menuBar->addAction(menu->menuAction());
         menuBar->addAction(menu_2->menuAction());
         menu->addAction(startRecordAction);
+        menu->addAction(setLogSavePath_action);
         menu_2->addAction(about_action);
         mainToolBar->addAction(startRecordAction);
 
@@ -518,6 +523,7 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", Q_NULLPTR));
         startRecordAction->setText(QApplication::translate("MainWindow", "\345\274\200\345\247\213\350\256\260\345\275\225", Q_NULLPTR));
         about_action->setText(QApplication::translate("MainWindow", "\345\205\263\344\272\216", Q_NULLPTR));
+        setLogSavePath_action->setText(QApplication::translate("MainWindow", "\350\256\276\347\275\256Log\346\226\207\344\273\266\345\255\230\345\202\250\350\267\257\345\276\204", Q_NULLPTR));
         formGroupBox->setTitle(QApplication::translate("MainWindow", "\344\270\262\345\217\243\345\217\202\346\225\260\350\256\276\347\275\256", Q_NULLPTR));
         label->setText(QApplication::translate("MainWindow", "\344\270\262\345\217\243\345\217\267", Q_NULLPTR));
         label_2->setText(QApplication::translate("MainWindow", "\346\263\242\347\211\271\347\216\207", Q_NULLPTR));
