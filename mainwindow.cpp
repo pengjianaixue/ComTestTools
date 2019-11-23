@@ -153,8 +153,8 @@ bool MainWindow::comPortSendData()
         bool completekey;
         m_nativeClassComport->WriteData((const char*)(SendText.toUtf8().constData()), SendText.length(),completekey,0);
 		++m_sendPackSum;
-        ui->label_SendCount->setText(QString::number(m_sendPackSum));
-        ContextDisPlay(SendText.replace("\r","\\r").replace("\n","\\n"),1,m_sendHexMode);
+		emit emitpackSum(m_sendPackSum);
+		emit emitDisPalyData(SendText.replace("\r", "\\r").replace("\n", "\\n"), 1, m_sendHexMode);
     }
     else
     {
@@ -419,6 +419,7 @@ bool MainWindow::ConnectSlot()
     connect(this, &MainWindow::emitRecviData,this, &MainWindow::disPlayRecvData);
 	connect(this->ui->startRecordAction, &QAction::triggered, this, &MainWindow::startRecordLogToFile);
 	connect(this->ui->setLogSavePath_action, &QAction::triggered, this, &MainWindow::openLogSavePathSetForm);
+	connect(this, &MainWindow::emitDisPalyData, this, &MainWindow::ContextDisPlay);
 	connect(this, &MainWindow::emitOpenLogFileFail, this, [&] {QMessageBox::critical(this, "log file error", "create log file error"); this->ui->startRecordAction->setIcon(QIcon(":/rc/icon/resource/record-off.png"));
 	connect(this->ui->startRecordAction, &QAction::triggered, this, &MainWindow::startRecordLogToFile); disconnect(this->ui->startRecordAction, &QAction::triggered, this, &MainWindow::stopRecordLogToFile); });
     return true;

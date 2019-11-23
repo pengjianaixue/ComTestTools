@@ -81,7 +81,8 @@ signals:
      void emitSnedStr(const char *SendCmd,int length);
      void emitpackSum(int length);
      void emitUsetime(long long  timeuse);
-     void emitRecviData(QString recvidata);
+     void emitRecviData(const QString &recvidata);
+	 void emitDisPalyData(const QString &Discontext, unsigned int DisplayDirct, bool IsHex);
 	 void emitOpenLogFileFail();
 
 private:
