@@ -20,6 +20,26 @@
 #define sprintf sprintf_s
 #endif // _MSC_VER
 
+/***********************************
+RAII wrap  CRITICAL_SECTION
+************************************/
+class CriticalSectionLockGuardian
+{
+public:
+	explicit CriticalSectionLockGuardian(CRITICAL_SECTION &Critical_Section) : m_Critical_Section(Critical_Section)
+	{
+		::EnterCriticalSection(&m_Critical_Section);
+	}
+	CriticalSectionLockGuardian() = delete;
+	~CriticalSectionLockGuardian() { ::LeaveCriticalSection(&m_Critical_Section); }
+private:
+	CriticalSectionLockGuardian(const CriticalSectionLockGuardian&);
+	CriticalSectionLockGuardian operator = (const CriticalSectionLockGuardian&);
+private:
+	CRITICAL_SECTION &m_Critical_Section;
+};
+
+
 
 //Windows 串口参数结构体定义如下
 //typedef struct _DCB {
@@ -290,7 +310,7 @@ private:
     volatile HANDLE    m_hListenThread;
 
     /** 同步互斥,临界区保护 */
-    CRITICAL_SECTION   m_csCommunicationSync;       //!< 互斥操作串口
+	CRITICAL_SECTION   m_csCommunicationSync;       //!< 互斥操作串口
     /** 串口模式: Synchronous_mode  同步模式,
                   Asynchronous_mode 异步模式*/
     COMTYPE			   m_thiscomtype;
@@ -313,7 +333,8 @@ private:
 const UINT SLEEP_TIME_INTERVAL = 5;
 inline CSerialPort::CSerialPort(COMTYPE comtype):m_hListenThread(INVALID_HANDLE_VALUE),m_thiscomtype(Synchronous_mode),
                                                  m_ClearupFlags(false), m_ClearupTread(NULL), m_CompletionPort(NULL),
-                                                 m_bGetQueuedCompletionFlags(false), m_GetCompletionQueuethread(NULL)
+                                                 m_bGetQueuedCompletionFlags(false), m_GetCompletionQueuethread(NULL),
+												 m_csCommunicationSync({0})
 {
     m_hComm = INVALID_HANDLE_VALUE;
     m_hListenThread = INVALID_HANDLE_VALUE;
@@ -352,7 +373,7 @@ bool CSerialPort::InitPort(const char *comPort /*= 1*/, UINT baud /*= CBR_9600*/
     }
 
     /** 进入临界段 */
-    EnterCriticalSection(&m_csCommunicationSync);
+	CriticalSectionLockGuardian criticalLocker(m_csCommunicationSync);
     /** 是否有错误发生 */
     BOOL bIsSuccess = TRUE;
     /** 在此可以设置输入输出的缓冲区大小,如果不设置,则系统会设置默认值.
@@ -420,7 +441,6 @@ bool CSerialPort::InitPort(const char *comPort /*= 1*/, UINT baud /*= CBR_9600*/
     PurgeComm(m_hComm, PURGE_RXCLEAR | PURGE_TXCLEAR | PURGE_RXABORT | PURGE_TXABORT);
 
     /** 离开临界段 */
-    LeaveCriticalSection(&m_csCommunicationSync);
     if (!bIsSuccess)
     {
         CloseGetQueuedCompletionStatusThread();
@@ -437,8 +457,7 @@ bool CSerialPort::InitPort(const char *comPort, const LPDCB& plDCB)
         return false;
     }
     /** 进入临界段 */
-    EnterCriticalSection(&m_csCommunicationSync);
-
+	CriticalSectionLockGuardian criticalLocker(m_csCommunicationSync);
     /** 配置串口参数 */
     if (!SetCommState(m_hComm, plDCB))
     {
@@ -448,10 +467,6 @@ bool CSerialPort::InitPort(const char *comPort, const LPDCB& plDCB)
 
     /**  清空串口缓冲区 */
     PurgeComm(m_hComm, PURGE_RXCLEAR | PURGE_TXCLEAR | PURGE_RXABORT | PURGE_TXABORT);
-
-    /** 离开临界段 */
-    LeaveCriticalSection(&m_csCommunicationSync);
-
     return true;
 }
 
@@ -480,8 +495,8 @@ inline bool CSerialPort::IsOpen()
 bool CSerialPort::openPort(const char *comPortName)
 {
     /** 进入临界段 */
+	CriticalSectionLockGuardian criticalLocker(m_csCommunicationSync);
 	char OpenComPortName[64] = { "\\\\.\\" };
-    EnterCriticalSection(&m_csCommunicationSync);
 	if (JudegmentComPortNumIsMoreThanTen(comPortName))
 	{
 		strcat_s(OpenComPortName, 64, comPortName);
@@ -539,12 +554,12 @@ bool CSerialPort::openPort(const char *comPortName)
     /** 如果打开失败，释放资源并返回 */
     if (m_hComm == INVALID_HANDLE_VALUE)
     {
-        LeaveCriticalSection(&m_csCommunicationSync);
+        //LeaveCriticalSection(&m_csCommunicationSync);
         return false;
     }
 
     /** 退出临界区 */
-    LeaveCriticalSection(&m_csCommunicationSync);
+    //LeaveCriticalSection(&m_csCommunicationSync);
 
     return true;
 }
@@ -605,7 +620,7 @@ inline unsigned int CSerialPort::Clearupfun(LPVOID lpparam)
     CSerialPort *thisclass =   static_cast<CSerialPort*>(lpparam);
     while (thisclass->m_ClearupFlags)
     {
-        EnterCriticalSection(&thisclass->m_csCommunicationSync);
+		CriticalSectionLockGuardian criticalLocker(thisclass->m_csCommunicationSync);
         if (!thisclass->m_usedoverlappedlist.empty())
         {
             OVERLAPPED *clearget =  thisclass->m_usedoverlappedlist.front();
@@ -617,7 +632,6 @@ inline unsigned int CSerialPort::Clearupfun(LPVOID lpparam)
             }
             thisclass->m_usedoverlappedlist.pop_front();
         }
-        LeaveCriticalSection(&thisclass->m_csCommunicationSync);
     }
     return 0;
 

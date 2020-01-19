@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'logfilepathselection.ui'
 **
-** Created by: Qt User Interface Compiler version 5.12.0
+** Created by: Qt User Interface Compiler version 5.9.7
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,9 +10,12 @@
 #define UI_LOGFILEPATHSELECTION_H
 
 #include <QtCore/QVariant>
+#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QGridLayout>
+#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 
@@ -28,20 +31,20 @@ public:
     void setupUi(QDialog *LogFilePathSelection)
     {
         if (LogFilePathSelection->objectName().isEmpty())
-            LogFilePathSelection->setObjectName(QString::fromUtf8("LogFilePathSelection"));
+            LogFilePathSelection->setObjectName(QStringLiteral("LogFilePathSelection"));
         LogFilePathSelection->setWindowModality(Qt::ApplicationModal);
         LogFilePathSelection->resize(357, 113);
         gridLayout = new QGridLayout(LogFilePathSelection);
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
-        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+        gridLayout->setObjectName(QStringLiteral("gridLayout"));
         lineEdit_filepath = new QLineEdit(LogFilePathSelection);
-        lineEdit_filepath->setObjectName(QString::fromUtf8("lineEdit_filepath"));
+        lineEdit_filepath->setObjectName(QStringLiteral("lineEdit_filepath"));
 
         gridLayout->addWidget(lineEdit_filepath, 0, 0, 1, 1);
 
         pushButton_opendir = new QPushButton(LogFilePathSelection);
-        pushButton_opendir->setObjectName(QString::fromUtf8("pushButton_opendir"));
+        pushButton_opendir->setObjectName(QStringLiteral("pushButton_opendir"));
 
         gridLayout->addWidget(pushButton_opendir, 0, 1, 1, 1);
 
@@ -53,8 +56,8 @@ public:
 
     void retranslateUi(QDialog *LogFilePathSelection)
     {
-        LogFilePathSelection->setWindowTitle(QApplication::translate("LogFilePathSelection", "\346\227\245\345\277\227\345\255\230\345\202\250\350\267\257\345\276\204\351\200\211\346\213\251", nullptr));
-        pushButton_opendir->setText(QApplication::translate("LogFilePathSelection", "\346\211\223\345\274\200\346\226\207\344\273\266\345\244\271", nullptr));
+        LogFilePathSelection->setWindowTitle(QApplication::translate("LogFilePathSelection", "\346\227\245\345\277\227\345\255\230\345\202\250\350\267\257\345\276\204\351\200\211\346\213\251", Q_NULLPTR));
+        pushButton_opendir->setText(QApplication::translate("LogFilePathSelection", "\346\211\223\345\274\200\346\226\207\344\273\266\345\244\271", Q_NULLPTR));
     } // retranslateUi
 
 };

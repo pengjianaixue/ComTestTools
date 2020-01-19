@@ -83,13 +83,12 @@ bool MainWindow::openComPort()
     GetComparamSetNative();
 	int comportNum = 0;
 	// Qt RegExp
-	QRegExp comportNumReg("\\d+");
-	comportNumReg.indexIn(m_nativeComportParam.Comname);
-	comportNum = comportNumReg.capturedTexts()[comportNumReg.captureCount()].toInt();
-	//if (comportNum>9)
-	//{
-	//	m_nativeComportParam.Comname
-	//}
+	QRegularExpression comportNumReg("\\d+");
+	QRegularExpressionMatch match = comportNumReg.match(m_nativeComportParam.Comname);
+	if (match.hasMatch())
+	{
+		comportNum = match.captured(match.lastCapturedIndex()).toInt();
+	}
     if(!m_nativeClassComport->InitPort(m_nativeComportParam.Comname.toUtf8().constData(),m_nativeComportParam.ComBaudRate,
                                              m_nativeComportParam.ComDataBit,m_nativeComportParam.ComStopBit,
                                              m_nativeComportParam.ComCheckway))
